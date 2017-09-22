@@ -9,5 +9,5 @@ use Tdw\RDB\Contract\Result;
 
 interface Insert extends Result
 {
-    public function lastInsertId(): int;
+    public function lastInsertId(string $name = null): int;
 }
