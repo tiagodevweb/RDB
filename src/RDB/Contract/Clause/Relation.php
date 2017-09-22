@@ -11,4 +11,5 @@ interface Relation
         string $childTable, string $foreignKeyChild, string $operator,
         string $primaryKeyParent, string $type = 'INNER'
     );
+    public function __toString();
 }

@@ -4,47 +4,42 @@ declare( strict_types=1 );
 
 namespace Tdw\RDB\Contract\Statement;
 
-use Tdw\RDB\Contract\Result\Select as SelectResult;
+use Tdw\RDB\Contract\Statement;
 
-interface Select extends Relation, Condition
+interface Select extends Statement
 {
+    public function columns(array $columns): Select;
     public function join(
         string $childTable, string $foreignKeyChild, string $operator, string $primaryKeyParent
-    );
+    ): Select;
     public function leftJoin(
         string $childTable, string $foreignKeyChild, string $operator, string $primaryKeyParent
-    );
+    ): Select;
     public function rightJoin(
         string $childTable, string $foreignKeyChild, string $operator, string $primaryKeyParent
-    );
+    ): Select;
     public function fullJoin(
         string $childTable, string $foreignKeyChild, string $operator, string $primaryKeyParent
-    );
-    public function where(string $column, string $operator, $value);
-    public function orWhere(string $column, string $operator, $value);
-    public function between(string $column, $valueOne, $valueTwo);
-    public function notBetween(string $column, $valueOne, $valueTwo);
-    public function orBetween(string $column, $valueOne, $valueTwo);
-    public function orNotBetween(string $column, $valueOne, $valueTwo);
-    public function in(string $column, array $subSet);
-    public function notIn(string $column, array $subSet);
-    public function orIn(string $column, array $subSet);
-    public function orNotIn(string $column, array $subSet);
-    public function exists(string $column, string $subSQL);
-    public function notExists(string $column, string $subSQL);
-    public function orExists(string $column, string $subSQL);
-    public function orNotExists(string $column, string $subSQL);
-    public function like(string $column, string $value);
-    public function orLike(string $column, string $value);
-    public function notLike(string $column, string $value);
-    public function orNotLike(string $column, string $value);
-    public function null(string $column);
-    public function orNull(string $column);
-    public function notNull(string $column);
-    public function orNotNull(string $column);
-    public function groupBy(string $columns);
-    public function orderBy(string $columns, $designator = 'ASC');
-    public function limit(int $quantity, int $offset = 0);
-    public function execute(): SelectResult;
-    public function __toString();
+    ): Select;
+    public function where(string $column, string $operator, $value): Select;
+    public function orWhere(string $column, string $operator, $value): Select;
+    public function between(string $column, $valueOne, $valueTwo): Select;
+    public function notBetween(string $column, $valueOne, $valueTwo): Select;
+    public function orBetween(string $column, $valueOne, $valueTwo): Select;
+    public function orNotBetween(string $column, $valueOne, $valueTwo): Select;
+    public function in(string $column, array $subSet): Select;
+    public function notIn(string $column, array $subSet): Select;
+    public function orIn(string $column, array $subSet): Select;
+    public function orNotIn(string $column, array $subSet): Select;
+    public function like(string $column, string $value): Select;
+    public function orLike(string $column, string $value): Select;
+    public function notLike(string $column, string $value): Select;
+    public function orNotLike(string $column, string $value): Select;
+    public function null(string $column): Select;
+    public function orNull(string $column): Select;
+    public function notNull(string $column): Select;
+    public function orNotNull(string $column): Select;
+    public function groupBy(string $columns): Select;
+    public function orderBy(string $columns, $designator = 'ASC'): Select;
+    public function limit(int $quantity, int $offset = 0): Select;
 }

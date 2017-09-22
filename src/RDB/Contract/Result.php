@@ -2,10 +2,9 @@
 
 declare( strict_types=1 );
 
-namespace Tdw\RDB\Contract\Result;
+namespace Tdw\RDB\Contract;
 
-
-interface Row
+interface Result
 {
     public function rowCount(): int;
 }

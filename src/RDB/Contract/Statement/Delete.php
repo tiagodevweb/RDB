@@ -4,10 +4,9 @@ declare( strict_types=1 );
 
 namespace Tdw\RDB\Contract\Statement;
 
-use Tdw\RDB\Contract\Result\Delete as DeleteResult;
+use Tdw\RDB\Contract\Statement;
 
-interface Delete
+interface Delete extends Statement
 {
-    public function execute(): DeleteResult;
-    public function __toString();
+
 }
