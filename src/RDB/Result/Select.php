@@ -23,9 +23,9 @@ class Select implements SelectResult
         return $this->statement->rowCount();
     }
 
-    public function fetchAll(string $className = \stdClass::class): array
+    public function fetchAll(int $style = \PDO::FETCH_ASSOC): array
     {
-        return $this->statement->fetchAll($className);
+        return $this->statement->fetchAll($style);
     }
 
     public function fetch(string $className = \stdClass::class)

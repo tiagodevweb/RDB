@@ -430,4 +430,47 @@ class SelectTest extends TestCase
         $this->assertEquals($expectedValues, $select->parameters());
         $this->assertEquals($expectedToString, (string)$select);
     }
+
+    /**
+     * @group limit
+     */
+    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdLargerLimit()
+    {
+        //arrange
+        $select = $this->newInstanceSelectStatement();
+        $id = 25;
+        $limit = 10;
+        $select->where( 'id', '>', $id)
+               ->limit($limit);
+
+        //act
+        $expectedToString = "SELECT * FROM employees WHERE id > ? LIMIT ?";
+        $expectedValues = [$id,$limit];
+
+        //assert
+        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedValues, $select->parameters());
+    }
+
+    /**
+     * @group limit
+     */
+    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdLargerLimitOffset()
+    {
+        //arrange
+        $select = $this->newInstanceSelectStatement();
+        $id = 25;
+        $limit = 10;
+        $offset = 5;
+        $select->where( 'id', '>', $id)
+               ->limit($limit, $offset);
+
+        //act
+        $expectedToString = "SELECT * FROM employees WHERE id > ? LIMIT ? OFFSET ?";
+        $expectedValues = [$id,$limit,$offset];
+
+        //assert
+        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedValues, $select->parameters());
+    }
 }

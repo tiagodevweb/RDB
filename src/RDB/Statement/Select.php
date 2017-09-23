@@ -7,6 +7,7 @@ namespace Tdw\RDB\Statement;
 use Tdw\RDB\Clause\{Condition,Relation,Grouping,Limitation,Ordination};
 use Tdw\RDB\Contract\Statement\Select as SelectStatement;
 use Tdw\RDB\Contract\Result\Select as ISelectResult;
+use Tdw\RDB\Exception\StatementExecuteException;
 use Tdw\RDB\Result\Select as SelectResult;
 
 class Select implements SelectStatement
@@ -254,15 +255,28 @@ class Select implements SelectStatement
 
     public function limit(int $quantity, int $offset = 0): SelectStatement
     {
+        $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES,false);
         $this->limitation->limit($quantity,$offset);
+        $this->parameters[] = $quantity;
+        if ($offset > 0){
+            $this->parameters[] = $offset;
+        }
         return $this;
     }
 
     public function execute(): ISelectResult
     {
-        $stmt = $this->pdo->prepare((string)$this);
-        $stmt->execute($this->parameters);
-        return new SelectResult($stmt);
+        try {
+            if (empty($this->parameters())) {
+                $stmt = $this->pdo->query((string)$this);
+            } else {
+                $stmt = $this->pdo->prepare((string)$this);
+                $stmt->execute($this->parameters());
+            }
+            return new SelectResult($stmt);
+        } catch (\PDOException $e) {
+            throw new StatementExecuteException("Execution of select statement failed", 0, $e);
+        }
     }
 
     public function __toString(): string
@@ -272,7 +286,7 @@ class Select implements SelectStatement
 
     public function parameters(): array
     {
-        return $this->parameters;
+        return array_values($this->parameters);
     }
 
     private function _sql()

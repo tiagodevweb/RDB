@@ -8,7 +8,7 @@ use Tdw\RDB\Contract\Clause\Limitation as ILimitation;
 
 class Limitation implements ILimitation
 {
-    private $limit;
+    private $syntax;
 
     public function limit(int $quantity, int $offset = 0)
     {
@@ -16,14 +16,14 @@ class Limitation implements ILimitation
             return;
         }
         if ( $offset > 0 ) {
-            $this->limit = intval($quantity).' OFFSET '.intval($offset);
+            $this->syntax = '? OFFSET ?';
             return;
         }
-        $this->limit = intval($quantity);
+        $this->syntax = '?';
     }
 
     public function __toString()
     {
-        return ! $this->limit ? '' : " LIMIT {$this->limit}";
+        return ! $this->syntax ? '' : " LIMIT {$this->syntax}";
     }
 }

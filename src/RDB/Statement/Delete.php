@@ -6,6 +6,7 @@ namespace Tdw\RDB\Statement;
 
 use Tdw\RDB\Contract\Statement\Delete as DeleteStatement;
 use Tdw\RDB\Contract\Result\Delete as IDeleteResult;
+use Tdw\RDB\Exception\StatementExecuteException;
 use Tdw\RDB\Result\Delete as DeleteResult;
 
 class Delete implements DeleteStatement
@@ -32,9 +33,13 @@ class Delete implements DeleteStatement
 
     public function execute(): IDeleteResult
     {
-        $stmt = $this->pdo->prepare((string)$this);
-        $stmt->execute($this->parameters());
-        return new DeleteResult($stmt);
+        try {
+            $stmt = $this->pdo->prepare((string)$this);
+            $stmt->execute($this->parameters());
+            return new DeleteResult($stmt);
+        } catch (\PDOException $e) {
+            throw new StatementExecuteException("Execution of delete statement failed", 0, $e);
+        }
     }
 
     public function __toString(): string

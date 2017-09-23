@@ -6,6 +6,7 @@ namespace Tdw\RDB\Statement;
 
 use Tdw\RDB\Contract\Statement\Update as UpdateStatement;
 use Tdw\RDB\Contract\Result\Update as IUpdateResult;
+use Tdw\RDB\Exception\StatementExecuteException;
 use Tdw\RDB\Result\Update as UpdateResult;
 
 class Update implements UpdateStatement
@@ -37,9 +38,13 @@ class Update implements UpdateStatement
 
     public function execute(): IUpdateResult
     {
-        $stmt = $this->pdo->prepare((string)$this);
-        $stmt->execute($this->parameters());
-        return new UpdateResult($stmt);
+        try {
+            $stmt = $this->pdo->prepare((string)$this);
+            $stmt->execute($this->parameters());
+            return new UpdateResult($stmt);
+        } catch (\PDOException $e) {
+            throw new StatementExecuteException("Execution of update statement failed", 0, $e);
+        }
     }
 
     public function __toString(): string

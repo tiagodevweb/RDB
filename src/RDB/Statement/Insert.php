@@ -6,6 +6,7 @@ namespace Tdw\RDB\Statement;
 
 use Tdw\RDB\Contract\Statement\Insert as InsertStatement;
 use Tdw\RDB\Contract\Result\Insert as IInsertResult;
+use Tdw\RDB\Exception\StatementExecuteException;
 use Tdw\RDB\Result\Insert as InsertResult;
 
 class Insert implements InsertStatement
@@ -32,9 +33,13 @@ class Insert implements InsertStatement
 
     public function execute(): IInsertResult
     {
-        $stmt = $this->pdo->prepare((string)$this);
-        $stmt->execute($this->parameters());
-        return new InsertResult($this->pdo, $stmt);
+        try {
+            $stmt = $this->pdo->prepare((string)$this);
+            $stmt->execute($this->parameters());
+            return new InsertResult($this->pdo, $stmt);
+        } catch (\PDOException $e) {
+            throw new StatementExecuteException("Execution of insert statement failed", 0, $e);
+        }
     }
 
     public function __toString(): string

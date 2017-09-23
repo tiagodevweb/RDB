@@ -41,5 +41,5 @@ interface Select extends Statement
     public function orNotNull(string $column): Select;
     public function groupBy(string $columns): Select;
     public function orderBy(string $columns, $designator = 'ASC'): Select;
-    public function limit(int $quantity, int $offset = 0): Select;
+    public function limit(int $count, int $offset = 0): Select;
 }
