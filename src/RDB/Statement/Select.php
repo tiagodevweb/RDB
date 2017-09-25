@@ -43,11 +43,6 @@ class Select implements SelectStatement
     private $condition;
 
     /**
-     * @var Grouping
-     */
-    private $grouping;
-
-    /**
      * @var Ordination
      */
     private $ordination;
@@ -64,7 +59,6 @@ class Select implements SelectStatement
         $this->columns = $columns;
         $this->relation = new Relation();
         $this->condition = new Condition();
-        $this->grouping = new Grouping();
         $this->ordination = new Ordination();
         $this->limitation = new Limitation();
     }
@@ -241,12 +235,6 @@ class Select implements SelectStatement
         return $this;
     }
 
-    public function groupBy(string $columns): SelectStatement
-    {
-        $this->grouping->groupBy($columns);
-        return $this;
-    }
-
     public function orderBy(string $columns, $designator = 'ASC'): SelectStatement
     {
         $this->ordination->orderBy($columns,$designator);
@@ -296,7 +284,6 @@ class Select implements SelectStatement
         $sql .= " FROM {$this->table}";
         $sql .= (string)$this->relation;
         $sql .= (string)$this->condition;
-        $sql .= (string)$this->grouping;
         $sql .= (string)$this->ordination;
         $sql .= (string)$this->limitation;
         return $sql;

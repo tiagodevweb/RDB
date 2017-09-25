@@ -9,6 +9,6 @@ use Tdw\RDB\Contract\Result;
 
 interface Select extends Result
 {
-    public function fetchAll(int $style = \PDO::FETCH_ASSOC): array;
-    public function fetch(string $className);
+    public function fetchAll(int $style): array;
+    public function fetch(int $style);
 }

@@ -8,194 +8,318 @@ use PHPUnit\Framework\TestCase;
 
 class SelectTest extends TestCase 
 {
-    private function newInstanceSelectStatement($table = 'employees', array $columns = ['*'])
+    /**
+     * @var Select
+     */
+    private $select;
+
+    protected function setUp()
     {
-        return new Select($this->createMock(\PDO::class), $table, $columns);
+        parent::setUp();
+        $this->select = new Select($this->createMock(\PDO::class), 'employees', ['*']);
     }
 
     /**
-     * @group unity
+     * @group unitary-select
      */
-    public function testShouldBeEmptyParametersAndSqlSelectAllFromEmployees()
+    public function testShouldBeEmptyParametersAndSelectAllFromEmployees()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
 
         //act
         $expected = "SELECT * FROM employees";
 
         //assert
-        $this->assertEquals([], $select->parameters());
-        $this->assertEquals($expected, (string)$select);
+        $this->assertEquals([], $this->select->parameters());
+        $this->assertEquals($expected, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select
      */
-    public function testShouldBeAssignedParametersAndSqlSelectIdAndNameFromEmployees()
+    public function testShouldBeAssignedParametersAndSelectIdAndNameFromEmployees()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement('employees',['id','name']);
+        $this->select->columns(['id, name']);
 
         //act
         $expected = "SELECT id, name FROM employees";
 
         //assert
-        $this->assertEquals([], $select->parameters());
-        $this->assertEquals($expected, (string)$select);
+        $this->assertEquals([], $this->select->parameters());
+        $this->assertEquals($expected, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select
      */
-    public function testShouldBeAssignedParametersAndSqlSelectIdAndNameFromEmployeesStatesWithMethodColumns()
+    public function testShouldBeAssignedParametersAndSelectIdAndNameFromEmployeesStatesWithMethodColumns()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement('employees');
-        $select->columns(['id','name']);
+        $this->select->columns(['id','name']);
 
         //act
         $expected = "SELECT id, name FROM employees";
 
         //assert
-        $this->assertEquals([], $select->parameters());
-        $this->assertEquals($expected, (string)$select);
+        $this->assertEquals([], $this->select->parameters());
+        $this->assertEquals($expected, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select-join
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereId()
+    public function testShouldBeAssignedParametersAndSelectAllFromEmployeesJoinUsers()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
+        $this->select->join('users','users.id','=','employees.user_id');
+
+        //act
+        $expectedToString = "SELECT * FROM employees INNER JOIN users ON (users.id = employees.user_id)";
+        $expectedParameters = [];
+
+        //assert
+        $this->assertEquals($expectedToString, (string)$this->select);
+        $this->assertEquals($expectedParameters, $this->select->parameters());
+    }
+
+    /**
+     * @group unitary-select-join
+     */
+    public function testShouldBeAssignedParametersAndSelectAllFromEmployeesLeftJoinUsers()
+    {
+        //arrange
+        $this->select->leftJoin('users','users.id','=','employees.user_id');
+
+        //act
+        $expectedToString = "SELECT * FROM employees LEFT OUTER JOIN users ON (users.id = employees.user_id)";
+        $expectedParameters = [];
+
+        //assert
+        $this->assertEquals($expectedToString, (string)$this->select);
+        $this->assertEquals($expectedParameters, $this->select->parameters());
+    }
+
+    /**
+     * @group unitary-select-join
+     */
+    public function testShouldBeAssignedParametersAndSelectAllFromEmployeesRightJoinUsers()
+    {
+        //arrange
+        $this->select->rightJoin('users','users.id','=','employees.user_id');
+
+        //act
+        $expectedToString = "SELECT * FROM employees RIGHT OUTER JOIN users ON (users.id = employees.user_id)";
+        $expectedParameters = [];
+
+        //assert
+        $this->assertEquals($expectedToString, (string)$this->select);
+        $this->assertEquals($expectedParameters, $this->select->parameters());
+    }
+
+    /**
+     * @group unitary-select-join
+     */
+    public function testShouldBeAssignedParametersAndSelectAllFromEmployeesFullJoinUsers()
+    {
+        //arrange
+        $this->select->fullJoin('users','users.id','=','employees.user_id');
+
+        //act
+        $expectedToString = "SELECT * FROM employees FULL OUTER JOIN users ON (users.id = employees.user_id)";
+        $expectedParameters = [];
+
+        //assert
+        $this->assertEquals($expectedToString, (string)$this->select);
+        $this->assertEquals($expectedParameters, $this->select->parameters());
+    }
+
+    /**
+     * @group unitary-select-where
+     */
+    public function testShouldBeAssignedParametersAndSelectWithWhere()
+    {
+        //arrange
         $id = 25;
-        $select->where('id', '=', $id);
+        $this->select->where('id', '=', $id);
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE id = ?";
         $expectedParameters = [$id];
 
         //assert
-        $this->assertEquals($expectedParameters, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedParameters, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select-where
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdAndDifferentName()
+    public function testShouldBeAssignedParametersAndSelectWithMultipleWhere()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
         $id = 25;
         $name = 'Tiago Lopes';
-        $select->where( 'id', '=', $id )
-               ->where( 'name', '!=', $name );
+        $this->select->where( 'id', '=', $id )
+                     ->where( 'name', '!=', $name );
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE id = ? AND name != ?";
         $expectedParameters = [$id, $name];
 
         //assert
-        $this->assertEquals($expectedParameters, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedParameters, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select-where
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdOrDifferentName()
+    public function testShouldBeAssignedParametersAndSelectWithMultipleOrWhere()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
         $id = 25;
         $name = 'Tiago Lopes';
-        $select->where( 'id','=',$id )
-               ->orWhere( 'name', '!=', $name );
+        $this->select->where('id','=',$id)
+                     ->orWhere('name', '!=', $name);
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE id = ? OR name != ?";
         $expectedParameters = [$id,$name];
 
         //assert
-        $this->assertEquals($expectedParameters, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedParameters, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select-between
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdIn()
+    public function testShouldBeAssignedParametersAndSelectWithBetween()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
+        $valueOne = 25;
+        $valueTwo = 50;
+        $this->select->between('id', $valueOne, $valueTwo);
+
+        //act
+        $expectedToString = "SELECT * FROM employees WHERE id BETWEEN ? AND ?";
+        $expectedParameters = [$valueOne, $valueTwo];
+
+        //assert
+        $this->assertEquals($expectedParameters, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
+    }
+
+    /**
+     * @group unitary-select-between
+     */
+    public function testShouldBeAssignedParametersAndSelectWithNotBetween()
+    {
+        //arrange
+        $valueOne = 25;
+        $valueTwo = 50;
+        $this->select->notBetween('id', $valueOne, $valueTwo);
+
+        //act
+        $expectedToString = "SELECT * FROM employees WHERE id NOT BETWEEN ? AND ?";
+        $expectedParameters = [$valueOne, $valueTwo];
+
+        //assert
+        $this->assertEquals($expectedParameters, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
+    }
+
+    /**
+     * @group unitary-select-between
+     */
+    public function testShouldBeAssignedParametersAndSelectWithOrBetween()
+    {
+        //arrange
+        $id = 100;
+        $valueOne = 25;
+        $valueTwo = 50;
+        $this->select->where('id','>',$id)
+                     ->orBetween('id', $valueOne, $valueTwo);
+
+        //act
+        $expectedToString = "SELECT * FROM employees WHERE id > ? OR id BETWEEN ? AND ?";
+        $expectedParameters = [$id, $valueOne, $valueTwo];
+
+        //assert
+        $this->assertEquals($expectedParameters, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
+    }
+
+    /**
+     * @group unitary-select-between
+     */
+    public function testShouldBeAssignedParametersAndSelectWithOrNotBetween()
+    {
+        //arrange
+        $id = 100;
+        $valueOne = 25;
+        $valueTwo = 50;
+        $this->select->where('id','>',$id)
+                     ->orNotBetween('id', $valueOne, $valueTwo);
+
+        //act
+        $expectedToString = "SELECT * FROM employees WHERE id > ? OR id NOT BETWEEN ? AND ?";
+        $expectedParameters = [$id, $valueOne, $valueTwo];
+
+        //assert
+        $this->assertEquals($expectedParameters, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
+    }
+
+    /**
+     * @group unitary-select-in
+     */
+    public function testShouldBeAssignedParametersAndSelectWithIn()
+    {
+        //arrange
         $subSet = [1, 2, 3];
-        $select->in( 'id', $subSet );
+        $this->select->in('id', $subSet);
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE id IN ( ?, ?, ? )";
         $expectedValues = $subSet;
 
         //assert
-        $this->assertEquals($expectedValues, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedValues, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select-in
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdSmallerAndIdIn()
+    public function testShouldBeAssignedParametersAndSelectWithNotIn()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
         $id = 25;
         $subSet = [1, 2, 3];
-        $select->where( 'id', '<', $id )
-               ->in( 'id', $subSet );
+        $this->select->where( 'id', '>', $id )
+                     ->notIn('id', $subSet);
 
         //act
-        $expectedToString = "SELECT * FROM employees WHERE id < ? AND id IN ( ?, ?, ? )";
+        $expectedToString = "SELECT * FROM employees WHERE id > ? AND id NOT IN ( ?, ?, ? )";
         array_unshift( $subSet, $id );
         $expectedValues = $subSet;
 
         //assert
-        $this->assertEquals($expectedValues, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedValues, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select-in
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdSmallerAndIdNotIn()
+    public function testShouldBeAssignedParametersAndSelectWithOrIn()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
         $id = 25;
         $subSet = [1, 2, 3];
-        $select->where( 'id', '<', $id )
-               ->notIn( 'id', $subSet );
-
-        //act
-        $expectedToString = "SELECT * FROM employees WHERE id < ? AND id NOT IN ( ?, ?, ? )";
-        array_unshift( $subSet, $id );
-        $expectedValues = $subSet;
-
-        //assert
-        $this->assertEquals($expectedValues, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
-    }
-
-    /**
-     * @group unity
-     */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdSmallerOrIdIn()
-    {
-        //arrange
-        $select = $this->newInstanceSelectStatement();
-        $id = 25;
-        $subSet = [1, 2, 3];
-        $select->where( 'id', '<', $id )
+        $this->select->where( 'id', '<', $id )
             ->orIn( 'id', $subSet );
 
         //act
@@ -204,21 +328,20 @@ class SelectTest extends TestCase
         $expectedValues = $subSet;
 
         //assert
-        $this->assertEquals($expectedValues, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedValues, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select-in
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdSmallerOrIdNotIn()
+    public function testShouldBeAssignedParametersAndSelectOrNotIn()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
         $id = 25;
         $subSet = [1, 2, 3];
-        $select->where( 'id', '<', $id )
-               ->orNotIn( 'id', $subSet );
+        $this->select->where( 'id', '<', $id )
+                     ->orNotIn( 'id', $subSet );
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE id < ? OR id NOT IN ( ?, ?, ? )";
@@ -226,60 +349,37 @@ class SelectTest extends TestCase
         $expectedValues = $subSet;
 
         //assert
-        $this->assertEquals($expectedValues, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedValues, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select-like
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereNameLike()
+    public function testShouldBeAssignedParametersAndSelectWithLike()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
         $like = 'Tiago%';
-        $select->like( 'name', $like );
+        $this->select->like( 'name', $like );
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE name LIKE ?";
         $expectedValues = [$like];
 
         //assert
-        $this->assertEquals($expectedValues, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedValues, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select-like
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdLargerAndNameLike()
+    public function testShouldBeAssignedParametersAndSelectWithOrLike()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
         $id = 25;
         $like = 'Tiago%';
-        $select->where( 'id', '>', $id)
-               ->like( 'name', $like );
-
-        //act
-        $expectedToString = "SELECT * FROM employees WHERE id > ? AND name LIKE ?";
-        $expectedValues = [$id, $like];
-
-        //assert
-        $this->assertEquals($expectedValues, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
-    }
-
-    /**
-     * @group unity
-     */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdLargerOrNameLike()
-    {
-        //arrange
-        $select = $this->newInstanceSelectStatement();
-        $id = 25;
-        $like = 'Tiago%';
-        $select->where( 'id', '>', $id)
+        $this->select->where( 'id', '>', $id)
                ->orLike( 'name', $like );
 
         //act
@@ -287,20 +387,19 @@ class SelectTest extends TestCase
         $expectedValues = [$id, $like];
 
         //assert
-        $this->assertEquals($expectedValues, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedValues, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select-like
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdLargerAndNameNotLike()
+    public function testShouldBeAssignedParametersAndSelectWithNotLike()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
         $id = 25;
         $like = 'Tiago%';
-        $select->where( 'id', '>', $id)
+        $this->select->where( 'id', '>', $id)
                ->notLike( 'name', $like );
 
         //act
@@ -308,118 +407,91 @@ class SelectTest extends TestCase
         $expectedValues = [$id, $like];
 
         //assert
-        $this->assertEquals($expectedValues, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedValues, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select-like
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdLargerOrNameNotLike()
+    public function testShouldBeAssignedParametersAndSelectAllWithOrNotLike()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
         $id = 25;
         $like = 'Tiago%';
-        $select->where( 'id', '>', $id)
-               ->orNotLike( 'name', $like );
+        $this->select->where('id', '>', $id)
+                     ->orNotLike('name', $like);
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE id > ? OR name NOT LIKE ?";
         $expectedValues = [$id, $like];
 
         //assert
-        $this->assertEquals($expectedValues, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedValues, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select-null
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereUpdatedNull()
+    public function testShouldBeAssignedParametersAndSelectWithIsNull()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
-        $select->null( 'updated' );
+        $this->select->null('updated');
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE updated IS NULL";
         $expectedValues = [];
 
         //assert
-        $this->assertEquals($expectedValues, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedValues, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select-null
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdLargerAndUpdatedNull()
+    public function testShouldBeAssignedParametersAndSelectWithOrIsNull()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
         $id = 25;
-        $select->where( 'id', '>', $id)
-               ->null( 'updated' );
-
-        //act
-        $expectedToString = "SELECT * FROM employees WHERE id > ? AND updated IS NULL";
-        $expectedValues = [$id];
-
-        //assert
-        $this->assertEquals($expectedValues, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
-    }
-
-    /**
-     * @group unity
-     */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdLargerOrUpdatedNull()
-    {
-        //arrange
-        $select = $this->newInstanceSelectStatement();
-        $id = 25;
-        $select->where( 'id', '>', $id)
-               ->orNull( 'updated' );
+        $this->select->where('id', '>', $id)
+                     ->orNull('updated');
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE id > ? OR updated IS NULL";
         $expectedValues = [$id];
 
         //assert
-        $this->assertEquals($expectedValues, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedValues, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select-null
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdLargerAndUpdatedNotNull()
+    public function testShouldBeAssignedParametersAndSelectWithNotNull()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
-        $id = 25;
-        $select->where( 'id', '>', $id)
-               ->notNull( 'updated' );
+             $this->select->notNull( 'updated' );
 
         //act
-        $expectedToString = "SELECT * FROM employees WHERE id > ? AND updated IS NOT NULL";
-        $expectedValues = [$id];
+        $expectedToString = "SELECT * FROM employees WHERE updated IS NOT NULL";
+        $expectedValues = [];
 
         //assert
-        $this->assertEquals($expectedValues, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedValues, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
     }
 
     /**
-     * @group unity
+     * @group unitary-select-null
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdLargerOrUpdatedNotNull()
+    public function testShouldBeAssignedParametersAndSelectWithOrNotNull()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
         $id = 25;
-        $select->where( 'id', '>', $id)
+        $this->select->where( 'id', '>', $id)
                ->orNotNull( 'updated' );
 
         //act
@@ -427,50 +499,44 @@ class SelectTest extends TestCase
         $expectedValues = [$id];
 
         //assert
-        $this->assertEquals($expectedValues, $select->parameters());
-        $this->assertEquals($expectedToString, (string)$select);
+        $this->assertEquals($expectedValues, $this->select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
     }
 
     /**
-     * @group limit
+     * @group unitary-select-limit
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdLargerLimit()
+    public function testShouldBeAssignedParametersAndSelectWithLimit()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
-        $id = 25;
-        $limit = 10;
-        $select->where( 'id', '>', $id)
-               ->limit($limit);
+           $limit = 10;
+        $this->select->limit($limit);
 
         //act
-        $expectedToString = "SELECT * FROM employees WHERE id > ? LIMIT ?";
-        $expectedValues = [$id,$limit];
+        $expectedToString = "SELECT * FROM employees LIMIT ?";
+        $expectedValues = [$limit];
 
         //assert
-        $this->assertEquals($expectedToString, (string)$select);
-        $this->assertEquals($expectedValues, $select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
+        $this->assertEquals($expectedValues, $this->select->parameters());
     }
 
     /**
-     * @group limit
+     * @group unitary-select-limit
      */
-    public function testShouldBeAssignedParametersAndSqlSelectAllFromEmployeesWhereIdLargerLimitOffset()
+    public function testShouldBeAssignedParametersAndSelectWithLimitAndOffset()
     {
         //arrange
-        $select = $this->newInstanceSelectStatement();
-        $id = 25;
         $limit = 10;
         $offset = 5;
-        $select->where( 'id', '>', $id)
-               ->limit($limit, $offset);
+        $this->select->limit($limit, $offset);
 
         //act
-        $expectedToString = "SELECT * FROM employees WHERE id > ? LIMIT ? OFFSET ?";
-        $expectedValues = [$id,$limit,$offset];
+        $expectedToString = "SELECT * FROM employees LIMIT ? OFFSET ?";
+        $expectedValues = [$limit,$offset];
 
         //assert
-        $this->assertEquals($expectedToString, (string)$select);
-        $this->assertEquals($expectedValues, $select->parameters());
+        $this->assertEquals($expectedToString, (string)$this->select);
+        $this->assertEquals($expectedValues, $this->select->parameters());
     }
 }

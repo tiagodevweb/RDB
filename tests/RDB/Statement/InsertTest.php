@@ -9,7 +9,7 @@ use Tdw\RDB\Statement\Insert;
 class InsertTest extends TestCase
 {
     /**
-     * @group unitary
+     * @group unitary-insert
      */
     public function testShouldBeInsertIntoEmployeesNameEmail()
     {
@@ -29,5 +29,4 @@ class InsertTest extends TestCase
         $this->assertEquals([$name,$email], $insert->parameters());
         $this->assertEquals($expectedToString, (string)$insert);
     }
-    
 }

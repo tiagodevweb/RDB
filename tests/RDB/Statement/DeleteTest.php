@@ -9,7 +9,7 @@ use Tdw\RDB\Statement\Delete;
 class DeleteTest extends TestCase
 {
     /**
-     * @group unity
+     * @group unity-delete
      */
     public function testShouldBeDeleteFromEmployeesWhereId()
     {

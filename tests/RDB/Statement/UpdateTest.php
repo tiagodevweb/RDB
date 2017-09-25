@@ -9,7 +9,7 @@ use Tdw\RDB\Statement\Update;
 class UpdateTest extends TestCase
 {
     /**
-     * @group unity
+     * @group unity-update
      */
     public function testShouldBeUpdateEmployeesNameEmailWhereId()
     {
