@@ -6,7 +6,7 @@ use Tdw\RDB\Statement\Select;
 
 use PHPUnit\Framework\TestCase;
 
-class SelectTest extends TestCase 
+class SelectTest extends TestCase
 {
     /**
      * @var Select
@@ -72,7 +72,7 @@ class SelectTest extends TestCase
     public function testShouldBeAssignedParametersAndSelectAllFromEmployeesJoinUsers()
     {
         //arrange
-        $this->select->join('users','users.id','=','employees.user_id');
+        $this->select->join('users', 'users.id', '=', 'employees.user_id');
 
         //act
         $expectedToString = "SELECT * FROM employees INNER JOIN users ON (users.id = employees.user_id)";
@@ -89,7 +89,7 @@ class SelectTest extends TestCase
     public function testShouldBeAssignedParametersAndSelectAllFromEmployeesLeftJoinUsers()
     {
         //arrange
-        $this->select->leftJoin('users','users.id','=','employees.user_id');
+        $this->select->leftJoin('users', 'users.id', '=', 'employees.user_id');
 
         //act
         $expectedToString = "SELECT * FROM employees LEFT OUTER JOIN users ON (users.id = employees.user_id)";
@@ -106,7 +106,7 @@ class SelectTest extends TestCase
     public function testShouldBeAssignedParametersAndSelectAllFromEmployeesRightJoinUsers()
     {
         //arrange
-        $this->select->rightJoin('users','users.id','=','employees.user_id');
+        $this->select->rightJoin('users', 'users.id', '=', 'employees.user_id');
 
         //act
         $expectedToString = "SELECT * FROM employees RIGHT OUTER JOIN users ON (users.id = employees.user_id)";
@@ -123,7 +123,7 @@ class SelectTest extends TestCase
     public function testShouldBeAssignedParametersAndSelectAllFromEmployeesFullJoinUsers()
     {
         //arrange
-        $this->select->fullJoin('users','users.id','=','employees.user_id');
+        $this->select->fullJoin('users', 'users.id', '=', 'employees.user_id');
 
         //act
         $expectedToString = "SELECT * FROM employees FULL OUTER JOIN users ON (users.id = employees.user_id)";
@@ -160,8 +160,8 @@ class SelectTest extends TestCase
         //arrange
         $id = 25;
         $name = 'Tiago Lopes';
-        $this->select->where( 'id', '=', $id )
-                     ->where( 'name', '!=', $name );
+        $this->select->where('id', '=', $id)
+                     ->where('name', '!=', $name);
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE id = ? AND name != ?";
@@ -180,7 +180,7 @@ class SelectTest extends TestCase
         //arrange
         $id = 25;
         $name = 'Tiago Lopes';
-        $this->select->where('id','=',$id)
+        $this->select->where('id', '=', $id)
                      ->orWhere('name', '!=', $name);
 
         //act
@@ -239,7 +239,7 @@ class SelectTest extends TestCase
         $id = 100;
         $valueOne = 25;
         $valueTwo = 50;
-        $this->select->where('id','>',$id)
+        $this->select->where('id', '>', $id)
                      ->orBetween('id', $valueOne, $valueTwo);
 
         //act
@@ -260,7 +260,7 @@ class SelectTest extends TestCase
         $id = 100;
         $valueOne = 25;
         $valueTwo = 50;
-        $this->select->where('id','>',$id)
+        $this->select->where('id', '>', $id)
                      ->orNotBetween('id', $valueOne, $valueTwo);
 
         //act
@@ -298,12 +298,12 @@ class SelectTest extends TestCase
         //arrange
         $id = 25;
         $subSet = [1, 2, 3];
-        $this->select->where( 'id', '>', $id )
+        $this->select->where('id', '>', $id)
                      ->notIn('id', $subSet);
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE id > ? AND id NOT IN ( ?, ?, ? )";
-        array_unshift( $subSet, $id );
+        array_unshift($subSet, $id);
         $expectedValues = $subSet;
 
         //assert
@@ -319,12 +319,12 @@ class SelectTest extends TestCase
         //arrange
         $id = 25;
         $subSet = [1, 2, 3];
-        $this->select->where( 'id', '<', $id )
-            ->orIn( 'id', $subSet );
+        $this->select->where('id', '<', $id)
+            ->orIn('id', $subSet);
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE id < ? OR id IN ( ?, ?, ? )";
-        array_unshift( $subSet, $id );
+        array_unshift($subSet, $id);
         $expectedValues = $subSet;
 
         //assert
@@ -340,12 +340,12 @@ class SelectTest extends TestCase
         //arrange
         $id = 25;
         $subSet = [1, 2, 3];
-        $this->select->where( 'id', '<', $id )
-                     ->orNotIn( 'id', $subSet );
+        $this->select->where('id', '<', $id)
+                     ->orNotIn('id', $subSet);
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE id < ? OR id NOT IN ( ?, ?, ? )";
-        array_unshift( $subSet, $id );
+        array_unshift($subSet, $id);
         $expectedValues = $subSet;
 
         //assert
@@ -360,7 +360,7 @@ class SelectTest extends TestCase
     {
         //arrange
         $like = 'Tiago%';
-        $this->select->like( 'name', $like );
+        $this->select->like('name', $like);
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE name LIKE ?";
@@ -379,8 +379,8 @@ class SelectTest extends TestCase
         //arrange
         $id = 25;
         $like = 'Tiago%';
-        $this->select->where( 'id', '>', $id)
-               ->orLike( 'name', $like );
+        $this->select->where('id', '>', $id)
+               ->orLike('name', $like);
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE id > ? OR name LIKE ?";
@@ -399,8 +399,8 @@ class SelectTest extends TestCase
         //arrange
         $id = 25;
         $like = 'Tiago%';
-        $this->select->where( 'id', '>', $id)
-               ->notLike( 'name', $like );
+        $this->select->where('id', '>', $id)
+               ->notLike('name', $like);
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE id > ? AND name NOT LIKE ?";
@@ -473,7 +473,7 @@ class SelectTest extends TestCase
     public function testShouldBeAssignedParametersAndSelectWithNotNull()
     {
         //arrange
-             $this->select->notNull( 'updated' );
+             $this->select->notNull('updated');
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE updated IS NOT NULL";
@@ -491,8 +491,8 @@ class SelectTest extends TestCase
     {
         //arrange
         $id = 25;
-        $this->select->where( 'id', '>', $id)
-               ->orNotNull( 'updated' );
+        $this->select->where('id', '>', $id)
+               ->orNotNull('updated');
 
         //act
         $expectedToString = "SELECT * FROM employees WHERE id > ? OR updated IS NOT NULL";

@@ -10,16 +10,28 @@ interface Select extends Statement
 {
     public function columns(array $columns): Select;
     public function join(
-        string $childTable, string $foreignKeyChild, string $operator, string $primaryKeyParent
+        string $childTable,
+        string $foreignKeyChild,
+        string $operator,
+        string $primaryKeyParent
     ): Select;
     public function leftJoin(
-        string $childTable, string $foreignKeyChild, string $operator, string $primaryKeyParent
+        string $childTable,
+        string $foreignKeyChild,
+        string $operator,
+        string $primaryKeyParent
     ): Select;
     public function rightJoin(
-        string $childTable, string $foreignKeyChild, string $operator, string $primaryKeyParent
+        string $childTable,
+        string $foreignKeyChild,
+        string $operator,
+        string $primaryKeyParent
     ): Select;
     public function fullJoin(
-        string $childTable, string $foreignKeyChild, string $operator, string $primaryKeyParent
+        string $childTable,
+        string $foreignKeyChild,
+        string $operator,
+        string $primaryKeyParent
     ): Select;
     public function where(string $column, string $operator, $value): Select;
     public function orWhere(string $column, string $operator, $value): Select;

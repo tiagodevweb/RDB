@@ -12,10 +12,10 @@ class Limitation implements ILimitation
 
     public function limit(int $quantity, int $offset = 0)
     {
-        if ( $quantity <= 0 ) {
+        if ($quantity <= 0) {
             return;
         }
-        if ( $offset > 0 ) {
+        if ($offset > 0) {
             $this->syntax = '? OFFSET ?';
             return;
         }

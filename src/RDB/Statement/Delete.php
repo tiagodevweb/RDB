@@ -44,7 +44,7 @@ class Delete implements DeleteStatement
 
     public function __toString(): string
     {
-        return $this->_sql();
+        return $this->sql();
     }
 
     public function parameters(): array
@@ -52,16 +52,16 @@ class Delete implements DeleteStatement
         return array_values($this->conditions);
     }
 
-    private function _sql(): string
+    private function sql(): string
     {
         return sprintf(
             "DELETE FROM %s WHERE %s",
             $this->table,
-            $this->_createSyntax($this->conditions)
+            $this->createSyntax($this->conditions)
         );
     }
 
-    private function _createSyntax(array $data): string
+    private function createSyntax(array $data): string
     {
         $string = '';
         foreach ($data as $key => $value) {

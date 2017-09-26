@@ -4,7 +4,6 @@ declare( strict_types=1 );
 
 namespace Tdw\RDB\Clause\Condition;
 
-
 class IsNull
 {
     private $column;
@@ -21,6 +20,6 @@ class IsNull
     public function __toString()
     {
         $not = $this->not ? 'NOT ' : '';
-        return sprintf( " %s %s IS %sNULL", $this->logicalOperator, $this->column, $not );
+        return sprintf(" %s %s IS %sNULL", $this->logicalOperator, $this->column, $not);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Tests\RDB\Statement;
 
-
 use PHPUnit\Framework\TestCase;
 use Tdw\RDB\Statement\Insert;
 

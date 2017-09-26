@@ -4,7 +4,6 @@ declare( strict_types=1 );
 
 namespace Tdw\RDB\Clause\Condition;
 
-
 class Where
 {
     private $column;
@@ -20,6 +19,6 @@ class Where
 
     public function __toString()
     {
-        return sprintf( " %s %s %s ?", strtoupper( $this->logicalOperator ), $this->column, $this->operator );
+        return sprintf(" %s %s %s ?", strtoupper($this->logicalOperator), $this->column, $this->operator);
     }
 }

@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Tdw\RDB\Statement;
 
-use Tdw\RDB\Clause\{Condition,Relation,Grouping,Limitation,Ordination};
+use Tdw\RDB\Clause\Condition;
+use Tdw\RDB\Clause\Relation;
+use Tdw\RDB\Clause\Limitation;
+use Tdw\RDB\Clause\Ordination;
 use Tdw\RDB\Contract\Statement\Select as SelectStatement;
 use Tdw\RDB\Contract\Result\Select as ISelectResult;
 use Tdw\RDB\Exception\StatementExecuteException;
@@ -70,33 +73,41 @@ class Select implements SelectStatement
     }
 
     public function join(
-        string $childTable, string $foreignKeyChild, string $operator, string $primaryKeyParent
-    ): SelectStatement
-    {
+        string $childTable,
+        string $foreignKeyChild,
+        string $operator,
+        string $primaryKeyParent
+    ): SelectStatement {
         $this->relation->join($childTable, $foreignKeyChild, $operator, $primaryKeyParent);
         return $this;
     }
 
     public function leftJoin(
-        string $childTable, string $foreignKeyChild, string $operator, string $primaryKeyParent
-    ): SelectStatement
-    {
+        string $childTable,
+        string $foreignKeyChild,
+        string $operator,
+        string $primaryKeyParent
+    ): SelectStatement {
         $this->relation->join($childTable, $foreignKeyChild, $operator, $primaryKeyParent, 'LEFT OUTER');
         return $this;
     }
 
     public function rightJoin(
-        string $childTable, string $foreignKeyChild, string $operator, string $primaryKeyParent
-    ): SelectStatement
-    {
+        string $childTable,
+        string $foreignKeyChild,
+        string $operator,
+        string $primaryKeyParent
+    ): SelectStatement {
         $this->relation->join($childTable, $foreignKeyChild, $operator, $primaryKeyParent, 'RIGHT OUTER');
         return $this;
     }
 
     public function fullJoin(
-        string $childTable, string $foreignKeyChild, string $operator, string $primaryKeyParent
-    ): SelectStatement
-    {
+        string $childTable,
+        string $foreignKeyChild,
+        string $operator,
+        string $primaryKeyParent
+    ): SelectStatement {
         $this->relation->join($childTable, $foreignKeyChild, $operator, $primaryKeyParent, 'FULL OUTER');
         return $this;
     }
@@ -149,7 +160,7 @@ class Select implements SelectStatement
 
     public function in(string $column, array $subSet): SelectStatement
     {
-        $this->condition->in($column,count($subSet));
+        $this->condition->in($column, count($subSet));
         foreach ($subSet as $item) {
             $this->parameters[] = $item;
         }
@@ -158,7 +169,7 @@ class Select implements SelectStatement
 
     public function notIn(string $column, array $subSet): SelectStatement
     {
-        $this->condition->in($column,count($subSet), 'AND', $not = true);
+        $this->condition->in($column, count($subSet), 'AND', $not = true);
         foreach ($subSet as $item) {
             $this->parameters[] = $item;
         }
@@ -167,7 +178,7 @@ class Select implements SelectStatement
 
     public function orIn(string $column, array $subSet): SelectStatement
     {
-        $this->condition->in($column,count($subSet), 'OR');
+        $this->condition->in($column, count($subSet), 'OR');
         foreach ($subSet as $item) {
             $this->parameters[] = $item;
         }
@@ -176,7 +187,7 @@ class Select implements SelectStatement
 
     public function orNotIn(string $column, array $subSet): SelectStatement
     {
-        $this->condition->in($column,count($subSet), 'OR', $not = true);
+        $this->condition->in($column, count($subSet), 'OR', $not = true);
         foreach ($subSet as $item) {
             $this->parameters[] = $item;
         }
@@ -237,16 +248,16 @@ class Select implements SelectStatement
 
     public function orderBy(string $columns, $designator = 'ASC'): SelectStatement
     {
-        $this->ordination->orderBy($columns,$designator);
+        $this->ordination->orderBy($columns, $designator);
         return $this;
     }
 
     public function limit(int $quantity, int $offset = 0): SelectStatement
     {
-        $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES,false);
-        $this->limitation->limit($quantity,$offset);
+        $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+        $this->limitation->limit($quantity, $offset);
         $this->parameters[] = $quantity;
-        if ($offset > 0){
+        if ($offset > 0) {
             $this->parameters[] = $offset;
         }
         return $this;
@@ -269,7 +280,7 @@ class Select implements SelectStatement
 
     public function __toString(): string
     {
-        return $this->_sql();
+        return $this->sql();
     }
 
     public function parameters(): array
@@ -277,7 +288,7 @@ class Select implements SelectStatement
         return array_values($this->parameters);
     }
 
-    private function _sql()
+    private function sql()
     {
         $sql = 'SELECT ';
         $sql .= implode(', ', $this->columns);

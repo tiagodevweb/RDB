@@ -4,7 +4,6 @@ declare( strict_types=1 );
 
 namespace Tdw\RDB\Clause\Condition;
 
-
 class Between
 {
     private $column;
@@ -21,6 +20,6 @@ class Between
     public function __toString()
     {
         $not = $this->not ? 'NOT ' : '';
-        return sprintf( " %s %s %sBETWEEN ? AND ?", strtoupper( $this->logicalOperator ), $this->column, $not );
+        return sprintf(" %s %s %sBETWEEN ? AND ?", strtoupper($this->logicalOperator), $this->column, $not);
     }
 }

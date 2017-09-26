@@ -4,7 +4,6 @@ declare( strict_types=1 );
 
 namespace Tdw\RDB\Clause\Condition;
 
-
 class In
 {
     private $column;
@@ -23,10 +22,16 @@ class In
     public function __toString()
     {
         $subSet = '';
-        for ( $i = 0; $i < $this->countSubSet; $i++ ) {
+        for ($i = 0; $i < $this->countSubSet; $i++) {
             $subSet .= '?, ';
         }
         $not = $this->not ? 'NOT ' : '';
-        return sprintf( " %s %s %sIN ( %s )", strtoupper( $this->logicalOperator ), $this->column, $not, rtrim( $subSet, ', ' ) );
+        return sprintf(
+            " %s %s %sIN ( %s )",
+            strtoupper($this->logicalOperator),
+            $this->column,
+            $not,
+            rtrim($subSet, ', ')
+        );
     }
 }

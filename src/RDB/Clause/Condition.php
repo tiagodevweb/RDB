@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Tdw\RDB\Clause;
 
-use Tdw\RDB\Clause\Condition\{Between,Exists,In,IsNull,Like,Where};
+use Tdw\RDB\Clause\Condition\Between;
+use Tdw\RDB\Clause\Condition\In;
+use Tdw\RDB\Clause\Condition\IsNull;
+use Tdw\RDB\Clause\Condition\Like;
+use Tdw\RDB\Clause\Condition\Where;
 use Tdw\RDB\Contract\Clause\Condition as ICondition;
 
 class Condition implements ICondition

@@ -11,11 +11,20 @@ class Relation implements IRelation
     private $join;
 
     public function join(
-        string $childTable, string $foreignKeyChild, string $operator,
-        string $primaryKeyParent, string $type = 'INNER'
-    )
-    {
-        $this->join = sprintf(" %s JOIN %s ON (%s %s %s)", $type, $childTable, $foreignKeyChild, $operator, $primaryKeyParent);
+        string $childTable,
+        string $foreignKeyChild,
+        string $operator,
+        string $primaryKeyParent,
+        string $type = 'INNER'
+    ) {
+        $this->join = sprintf(
+            " %s JOIN %s ON (%s %s %s)",
+            $type,
+            $childTable,
+            $foreignKeyChild,
+            $operator,
+            $primaryKeyParent
+        );
     }
 
     public function __toString()

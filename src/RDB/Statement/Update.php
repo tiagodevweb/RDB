@@ -49,7 +49,7 @@ class Update implements UpdateStatement
 
     public function __toString(): string
     {
-        return $this->_sql();
+        return $this->sql();
     }
 
     public function parameters(): array
@@ -57,17 +57,17 @@ class Update implements UpdateStatement
         return array_merge(array_values($this->parameters), array_values($this->conditions));
     }
 
-    private function _sql(): string
+    private function sql(): string
     {
         return sprintf(
             "UPDATE %s SET %s WHERE %s",
             $this->table,
-            $this->_createSyntax($this->parameters),
-            $this->_createSyntax($this->conditions)
+            $this->createSyntax($this->parameters),
+            $this->createSyntax($this->conditions)
         );
     }
 
-    private function _createSyntax(array $data): string
+    private function createSyntax(array $data): string
     {
         $string = '';
         foreach ($data as $key => $value) {

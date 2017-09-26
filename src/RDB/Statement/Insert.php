@@ -44,7 +44,7 @@ class Insert implements InsertStatement
 
     public function __toString(): string
     {
-        return $this->_sql();
+        return $this->sql();
     }
 
     public function parameters(): array
@@ -52,7 +52,7 @@ class Insert implements InsertStatement
         return array_values($this->parameters);
     }
 
-    private function _sql(): string
+    private function sql(): string
     {
         $parameters = '';
         for ($i=0; $i < count($this->parameters); $i++) {
@@ -62,7 +62,7 @@ class Insert implements InsertStatement
             "INSERT INTO %s ( %s ) VALUES ( %s )",
             $this->table,
             implode(', ', array_keys($this->parameters)),
-            rtrim($parameters,', ')
+            rtrim($parameters, ', ')
         );
     }
 }

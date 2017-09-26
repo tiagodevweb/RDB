@@ -2,7 +2,6 @@
 
 namespace Tests\RDB;
 
-
 use PHPUnit\Framework\TestCase;
 use Tdw\RDB\Database;
 use Tdw\RDB\Result\Insert as InsertResult;
@@ -59,7 +58,7 @@ class DatabaseTest extends TestCase
             'title' => 'Title RDB Test',
             'description' => 'Description RDB Test'
         ];
-        $insertStatement = $this->database->insert('posts',$parameters);
+        $insertStatement = $this->database->insert('posts', $parameters);
         /**@var \Tdw\RDB\Result\Insert $result */
         $result = $insertStatement->execute();
 
@@ -87,7 +86,7 @@ class DatabaseTest extends TestCase
         ];
         $this->insertRowAndReturnInsertResult($post);
         $this->insertRowAndReturnInsertResult($post2);
-        $selectStatement = $this->database->select('posts',['title','description']);
+        $selectStatement = $this->database->select('posts', ['title','description']);
         /**@var \Tdw\RDB\Result\Select $result */
         $result = $selectStatement->execute();
         //act
@@ -114,8 +113,8 @@ class DatabaseTest extends TestCase
         /**@var \Tdw\RDB\Result\Insert $resultInsert */
         $this->insertRowAndReturnInsertResult($post2);
         $resultInsert = $this->insertRowAndReturnInsertResult($post);
-        $selectStatement = $this->database->select('posts',['title','description']);
-        $selectStatement->where('id','=',$resultInsert->lastInsertId());
+        $selectStatement = $this->database->select('posts', ['title','description']);
+        $selectStatement->where('id', '=', $resultInsert->lastInsertId());
         /**@var \Tdw\RDB\Result\Select $result */
         $result = $selectStatement->execute();
 
@@ -146,7 +145,7 @@ class DatabaseTest extends TestCase
         $lastInsertId = $resultInsert->lastInsertId();
 
         /**@var \Tdw\RDB\Result\Update $resultUpdate */
-        $updateStatement = $this->database->update('posts',$post2,['id'=>$lastInsertId]);
+        $updateStatement = $this->database->update('posts', $post2, ['id'=>$lastInsertId]);
         $resultUpdate = $updateStatement->execute();
 
         //act
@@ -171,7 +170,7 @@ class DatabaseTest extends TestCase
         $lastInsertId = $resultInsert->lastInsertId();
 
         /**@var \Tdw\RDB\Result\Delete $resultDelete */
-        $deleteStatement = $this->database->delete('posts',['id'=>$lastInsertId]);
+        $deleteStatement = $this->database->delete('posts', ['id'=>$lastInsertId]);
         $resultDelete = $deleteStatement->execute();
 
         //act
@@ -187,7 +186,7 @@ class DatabaseTest extends TestCase
             'title' => 'Title RDB Test',
             'description' => 'Description RDB Test'
         ] : $parameters;
-        $insertStatement = $this->database->insert('posts',$parameters);
+        $insertStatement = $this->database->insert('posts', $parameters);
         return $insertStatement->execute();
     }
 }
