@@ -82,36 +82,6 @@ class Select implements SelectStatement
         return $this;
     }
 
-    public function leftJoin(
-        string $childTable,
-        string $foreignKeyChild,
-        string $operator,
-        string $primaryKeyParent
-    ): SelectStatement {
-        $this->relation->join($childTable, $foreignKeyChild, $operator, $primaryKeyParent, 'LEFT OUTER');
-        return $this;
-    }
-
-    public function rightJoin(
-        string $childTable,
-        string $foreignKeyChild,
-        string $operator,
-        string $primaryKeyParent
-    ): SelectStatement {
-        $this->relation->join($childTable, $foreignKeyChild, $operator, $primaryKeyParent, 'RIGHT OUTER');
-        return $this;
-    }
-
-    public function fullJoin(
-        string $childTable,
-        string $foreignKeyChild,
-        string $operator,
-        string $primaryKeyParent
-    ): SelectStatement {
-        $this->relation->join($childTable, $foreignKeyChild, $operator, $primaryKeyParent, 'FULL OUTER');
-        return $this;
-    }
-
     public function where(string $column, string $operator, $value): SelectStatement
     {
         $this->condition->where($column, $operator);
@@ -121,6 +91,7 @@ class Select implements SelectStatement
 
     public function orWhere(string $column, string $operator, $value): SelectStatement
     {
+        $this->whereExists(__METHOD__);
         $this->condition->where($column, $operator, 'OR');
         $this->parameters[] = $value;
         return $this;
@@ -144,6 +115,7 @@ class Select implements SelectStatement
 
     public function orBetween(string $column, $valueOne, $valueTwo): SelectStatement
     {
+        $this->whereExists(__METHOD__);
         $this->condition->between($column, 'OR');
         $this->parameters[] = $valueOne;
         $this->parameters[] = $valueTwo;
@@ -152,6 +124,7 @@ class Select implements SelectStatement
 
     public function orNotBetween(string $column, $valueOne, $valueTwo): SelectStatement
     {
+        $this->whereExists(__METHOD__);
         $this->condition->between($column, 'OR', $not = true);
         $this->parameters[] = $valueOne;
         $this->parameters[] = $valueTwo;
@@ -178,6 +151,7 @@ class Select implements SelectStatement
 
     public function orIn(string $column, array $subSet): SelectStatement
     {
+        $this->whereExists(__METHOD__);
         $this->condition->in($column, count($subSet), 'OR');
         foreach ($subSet as $item) {
             $this->parameters[] = $item;
@@ -187,6 +161,7 @@ class Select implements SelectStatement
 
     public function orNotIn(string $column, array $subSet): SelectStatement
     {
+        $this->whereExists(__METHOD__);
         $this->condition->in($column, count($subSet), 'OR', $not = true);
         foreach ($subSet as $item) {
             $this->parameters[] = $item;
@@ -203,6 +178,7 @@ class Select implements SelectStatement
 
     public function orLike(string $column, string $value): SelectStatement
     {
+        $this->whereExists(__METHOD__);
         $this->condition->like($column, 'OR');
         $this->parameters[] = $value;
         return $this;
@@ -217,6 +193,7 @@ class Select implements SelectStatement
 
     public function orNotLike(string $column, string $value): SelectStatement
     {
+        $this->whereExists(__METHOD__);
         $this->condition->like($column, 'OR', $not = true);
         $this->parameters[] = $value;
         return $this;
@@ -230,6 +207,7 @@ class Select implements SelectStatement
 
     public function orNull(string $column): SelectStatement
     {
+        $this->whereExists(__METHOD__);
         $this->condition->null($column, 'OR');
         return $this;
     }
@@ -242,6 +220,7 @@ class Select implements SelectStatement
 
     public function orNotNull(string $column): SelectStatement
     {
+        $this->whereExists(__METHOD__);
         $this->condition->null($column, 'OR', $not = true);
         return $this;
     }
@@ -298,5 +277,16 @@ class Select implements SelectStatement
         $sql .= (string)$this->ordination;
         $sql .= (string)$this->limitation;
         return $sql;
+    }
+
+    /**
+     * @param $method
+     * @throws StatementExecuteException
+     */
+    private function whereExists($method): void
+    {
+        if (!strpos($this->sql(), 'WHERE')) {
+            throw new StatementExecuteException("The where clause should be called before {$method}");
+        }
     }
 }

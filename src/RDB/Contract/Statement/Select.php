@@ -15,24 +15,6 @@ interface Select extends Statement
         string $operator,
         string $primaryKeyParent
     ): Select;
-    public function leftJoin(
-        string $childTable,
-        string $foreignKeyChild,
-        string $operator,
-        string $primaryKeyParent
-    ): Select;
-    public function rightJoin(
-        string $childTable,
-        string $foreignKeyChild,
-        string $operator,
-        string $primaryKeyParent
-    ): Select;
-    public function fullJoin(
-        string $childTable,
-        string $foreignKeyChild,
-        string $operator,
-        string $primaryKeyParent
-    ): Select;
     public function where(string $column, string $operator, $value): Select;
     public function orWhere(string $column, string $operator, $value): Select;
     public function between(string $column, $valueOne, $valueTwo): Select;

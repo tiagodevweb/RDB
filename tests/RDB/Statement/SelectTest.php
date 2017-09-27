@@ -84,57 +84,6 @@ class SelectTest extends TestCase
     }
 
     /**
-     * @group unitary-select-join
-     */
-    public function testShouldBeAssignedParametersAndSelectAllFromEmployeesLeftJoinUsers()
-    {
-        //arrange
-        $this->select->leftJoin('users', 'users.id', '=', 'employees.user_id');
-
-        //act
-        $expectedToString = "SELECT * FROM employees LEFT OUTER JOIN users ON (users.id = employees.user_id)";
-        $expectedParameters = [];
-
-        //assert
-        $this->assertEquals($expectedToString, (string)$this->select);
-        $this->assertEquals($expectedParameters, $this->select->parameters());
-    }
-
-    /**
-     * @group unitary-select-join
-     */
-    public function testShouldBeAssignedParametersAndSelectAllFromEmployeesRightJoinUsers()
-    {
-        //arrange
-        $this->select->rightJoin('users', 'users.id', '=', 'employees.user_id');
-
-        //act
-        $expectedToString = "SELECT * FROM employees RIGHT OUTER JOIN users ON (users.id = employees.user_id)";
-        $expectedParameters = [];
-
-        //assert
-        $this->assertEquals($expectedToString, (string)$this->select);
-        $this->assertEquals($expectedParameters, $this->select->parameters());
-    }
-
-    /**
-     * @group unitary-select-join
-     */
-    public function testShouldBeAssignedParametersAndSelectAllFromEmployeesFullJoinUsers()
-    {
-        //arrange
-        $this->select->fullJoin('users', 'users.id', '=', 'employees.user_id');
-
-        //act
-        $expectedToString = "SELECT * FROM employees FULL OUTER JOIN users ON (users.id = employees.user_id)";
-        $expectedParameters = [];
-
-        //assert
-        $this->assertEquals($expectedToString, (string)$this->select);
-        $this->assertEquals($expectedParameters, $this->select->parameters());
-    }
-
-    /**
      * @group unitary-select-where
      */
     public function testShouldBeAssignedParametersAndSelectWithWhere()
