@@ -82,7 +82,7 @@ try {
 
 ### Statement Method
 
-> Used only in Tdw\Result\Select
+> Used only in Tdw\Statement\Select
 ```php
 ->columns(array $columns): Tdw\Statement\Select
 ->join(
