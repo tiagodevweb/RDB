@@ -9,7 +9,7 @@ matrix:
     - php: 7.2
 
 install:
-  composer self-update
+  composer selfupdate
   composer install
 
 script:
