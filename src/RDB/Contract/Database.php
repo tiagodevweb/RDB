@@ -16,7 +16,7 @@ interface Database
     public function insert(string $table, array $parameters): Insert;
     public function update(string $table, array $parameters, array $conditions): Update;
     public function delete(string $table, array $conditions): Delete;
-    public function query(string $sql, array $parameters = []): SelectResult;
+    public function selectSQL(string $sql, array $parameters = []): SelectResult;
     public function beginTransaction(): bool;
     public function commit(): bool;
     public function rollBack(): bool;

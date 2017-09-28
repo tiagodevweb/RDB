@@ -49,7 +49,7 @@ class Database implements IDatabase
         return new Delete($this->pdo, $table, $conditions);
     }
 
-    public function query(string $sql, array $parameters = []): ISelectResult
+    public function selectSQL(string $sql, array $parameters = []): ISelectResult
     {
         try {
             if (empty($this->parameters)) {

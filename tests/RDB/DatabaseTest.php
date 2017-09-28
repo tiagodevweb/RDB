@@ -176,7 +176,7 @@ class DatabaseTest extends TestCase
         $lastInsertId = $this->insertRowAndReturnInsertResult('posts', $post)->lastInsertId();
         $selectStatement = $this->database->select('posts', ['title','description']);
         $selectStatement->where('id', '=', $lastInsertId)
-            ->orWhere('title','=','Title RDB Test 2');
+            ->orWhere('title', '=', 'Title RDB Test 2');
 
         /**@var \Tdw\RDB\Result\Select $result */
         $result = $selectStatement->execute();
@@ -207,8 +207,8 @@ class DatabaseTest extends TestCase
         $lastInsertIdPost = $this->insertRowAndReturnInsertResult('posts', $post)->lastInsertId();
         $selectStatement = $this->database->select('posts')
             ->columns(['name','title','description','category_id'])
-            ->join('categories','cat_id','=','category_id')
-            ->where('id','=',$lastInsertIdPost);
+            ->join('categories', 'cat_id', '=', 'category_id')
+            ->where('id', '=', $lastInsertIdPost);
 
         /**@var \Tdw\RDB\Result\Select $result */
         $result = $selectStatement->execute();
@@ -239,8 +239,8 @@ class DatabaseTest extends TestCase
         $lastInsertIdPost = $this->insertRowAndReturnInsertResult('posts', $post)->lastInsertId();
         $selectStatement = $this->database->select('posts p')
             ->columns(['c.name','p.title'])
-            ->join('categories c','c.cat_id','=','p.category_id')
-            ->where('p.id','=',$lastInsertIdPost);
+            ->join('categories c', 'c.cat_id', '=', 'p.category_id')
+            ->where('p.id', '=', $lastInsertIdPost);
 
         /**@var \Tdw\RDB\Result\Select $result */
         $result = $selectStatement->execute();
@@ -279,8 +279,8 @@ class DatabaseTest extends TestCase
         ];
         $this->insertRowAndReturnInsertResult('posts', $post2);
         $lastInsertIdPost = $this->insertRowAndReturnInsertResult('posts', $post)->lastInsertId();
-        $selectStatement = $this->database->select('posts',['id'])
-                ->between('visited',50,150);
+        $selectStatement = $this->database->select('posts', ['id'])
+                ->between('visited', 50, 150);
 
         /**@var \Tdw\RDB\Result\Select $result */
         $result = $selectStatement->execute();
@@ -301,7 +301,7 @@ class DatabaseTest extends TestCase
     public function testShouldThrowAnExceptionInOrBetween()
     {
         //arrange
-        $this->database->select('posts',['id'])->orBetween('visited',50,150);
+        $this->database->select('posts', ['id'])->orBetween('visited', 50, 150);
     }
 
     /**
@@ -328,8 +328,8 @@ class DatabaseTest extends TestCase
         ];
         $this->insertRowAndReturnInsertResult('posts', $post2);
         $lastInsertIdPost = $this->insertRowAndReturnInsertResult('posts', $post)->lastInsertId();
-        $selectStatement = $this->database->select('posts',['id'])
-                      ->notBetween('visited',150,250);
+        $selectStatement = $this->database->select('posts', ['id'])
+                      ->notBetween('visited', 150, 250);
 
         /**@var \Tdw\RDB\Result\Select $result */
         $result = $selectStatement->execute();
@@ -350,7 +350,7 @@ class DatabaseTest extends TestCase
     public function testShouldThrowAnExceptionInOrNotBetween()
     {
         //arrange
-        $this->database->select('posts',['id'])->orNotBetween('visited', 150, 250);
+        $this->database->select('posts', ['id'])->orNotBetween('visited', 150, 250);
     }
 
     /**
@@ -377,8 +377,8 @@ class DatabaseTest extends TestCase
         ];
         $this->insertRowAndReturnInsertResult('posts', $post2);
         $lastInsertIdPost = $this->insertRowAndReturnInsertResult('posts', $post)->lastInsertId();
-        $selectStatement = $this->database->select('posts',['id'])
-            ->in('visited',[100,101,102]);
+        $selectStatement = $this->database->select('posts', ['id'])
+            ->in('visited', [100,101,102]);
 
         /**@var \Tdw\RDB\Result\Select $result */
         $result = $selectStatement->execute();
@@ -399,7 +399,7 @@ class DatabaseTest extends TestCase
     public function testShouldThrowAnExceptionInOrIn()
     {
         //arrange
-        $this->database->select('posts',['id'])->orIn('visited',[100,101,102]);
+        $this->database->select('posts', ['id'])->orIn('visited', [100,101,102]);
     }
 
     /**
@@ -426,7 +426,7 @@ class DatabaseTest extends TestCase
         ];
         $this->insertRowAndReturnInsertResult('posts', $post2);
         $lastInsertIdPost = $this->insertRowAndReturnInsertResult('posts', $post)->lastInsertId();
-        $selectStatement = $this->database->select('posts',['id'])
+        $selectStatement = $this->database->select('posts', ['id'])
             ->notIn('visited', [200,201,202]);
 
         /**@var \Tdw\RDB\Result\Select $result */
@@ -448,7 +448,7 @@ class DatabaseTest extends TestCase
     public function testShouldThrowAnExceptionInOrNotIn()
     {
         //arrange
-        $this->database->select('posts',['id'])->orNotIn('visited', [200,201,202]);
+        $this->database->select('posts', ['id'])->orNotIn('visited', [200,201,202]);
     }
 
     /**
@@ -475,7 +475,7 @@ class DatabaseTest extends TestCase
         ];
         $this->insertRowAndReturnInsertResult('posts', $post2);
         $lastInsertIdPost = $this->insertRowAndReturnInsertResult('posts', $post)->lastInsertId();
-        $selectStatement = $this->database->select('posts',['id'])
+        $selectStatement = $this->database->select('posts', ['id'])
             ->like('title', '%TestLike');
 
         /**@var \Tdw\RDB\Result\Select $result */
@@ -497,7 +497,7 @@ class DatabaseTest extends TestCase
     public function testShouldThrowAnExceptionInOrLike()
     {
         //arrange
-        $this->database->select('posts',['id'])->orLike('title', '%TestLike');
+        $this->database->select('posts', ['id'])->orLike('title', '%TestLike');
     }
 
     /**
@@ -524,7 +524,7 @@ class DatabaseTest extends TestCase
         ];
         $this->insertRowAndReturnInsertResult('posts', $post2);
         $lastInsertIdPost = $this->insertRowAndReturnInsertResult('posts', $post)->lastInsertId();
-        $selectStatement = $this->database->select('posts',['id'])
+        $selectStatement = $this->database->select('posts', ['id'])
             ->notLike('title', '%Test 2');
 
         /**@var \Tdw\RDB\Result\Select $result */
@@ -546,7 +546,7 @@ class DatabaseTest extends TestCase
     public function testShouldThrowAnExceptionInOrNotLike()
     {
         //arrange
-        $this->database->select('posts',['id'])->orNotLike('title', '%Test 2');
+        $this->database->select('posts', ['id'])->orNotLike('title', '%Test 2');
     }
 
     /**
@@ -573,7 +573,7 @@ class DatabaseTest extends TestCase
         ];
         $this->insertRowAndReturnInsertResult('posts', $post2);
         $lastInsertIdPost = $this->insertRowAndReturnInsertResult('posts', $post)->lastInsertId();
-        $selectStatement = $this->database->select('posts',['id'])
+        $selectStatement = $this->database->select('posts', ['id'])
             ->null('category_id');
 
         /**@var \Tdw\RDB\Result\Select $result */
@@ -595,7 +595,7 @@ class DatabaseTest extends TestCase
     public function testShouldThrowAnExceptionInOrNull()
     {
         //arrange
-        $this->database->select('posts',['id'])->orNull('category_id');
+        $this->database->select('posts', ['id'])->orNull('category_id');
     }
 
     /**
@@ -622,7 +622,7 @@ class DatabaseTest extends TestCase
         ];
         $this->insertRowAndReturnInsertResult('posts', $post2);
         $lastInsertIdPost = $this->insertRowAndReturnInsertResult('posts', $post)->lastInsertId();
-        $selectStatement = $this->database->select('posts',['id'])
+        $selectStatement = $this->database->select('posts', ['id'])
             ->notNull('category_id');
 
         /**@var \Tdw\RDB\Result\Select $result */
@@ -644,7 +644,7 @@ class DatabaseTest extends TestCase
     public function testShouldThrowAnExceptionInOrNotNull()
     {
         //arrange
-        $this->database->select('posts',['id'])->orNotNull('category_id');
+        $this->database->select('posts', ['id'])->orNotNull('category_id');
     }
 
     /**
@@ -671,7 +671,7 @@ class DatabaseTest extends TestCase
         ];
         $lastInsertIdPost = $this->insertRowAndReturnInsertResult('posts', $post)->lastInsertId();
         $lastInsertIdPost2 = $this->insertRowAndReturnInsertResult('posts', $post2)->lastInsertId();
-        $selectStatement = $this->database->select('posts',['id'])
+        $selectStatement = $this->database->select('posts', ['id'])
             ->orderBy('id', 'ASC');
 
         /**@var \Tdw\RDB\Result\Select $result */
@@ -709,7 +709,7 @@ class DatabaseTest extends TestCase
         ];
         $lastInsertIdPost = $this->insertRowAndReturnInsertResult('posts', $post)->lastInsertId();
         $lastInsertIdPost2 = $this->insertRowAndReturnInsertResult('posts', $post2)->lastInsertId();
-        $selectStatement = $this->database->select('posts',['id'])
+        $selectStatement = $this->database->select('posts', ['id'])
             ->orderBy('id', 'DESC');
 
         /**@var \Tdw\RDB\Result\Select $result */
@@ -754,8 +754,8 @@ class DatabaseTest extends TestCase
         $lastInsertIdPost = $this->insertRowAndReturnInsertResult('posts', $post)->lastInsertId();
         $lastInsertIdPost2 = $this->insertRowAndReturnInsertResult('posts', $post2)->lastInsertId();
         $lastInsertIdPost3 = $this->insertRowAndReturnInsertResult('posts', $post3)->lastInsertId();
-        $selectStatement = $this->database->select('posts',['id'])
-            ->where('visited','>',100)
+        $selectStatement = $this->database->select('posts', ['id'])
+            ->where('visited', '>', 100)
             ->orderBy('id', 'DESC');
 
         /**@var \Tdw\RDB\Result\Select $result */
@@ -800,7 +800,7 @@ class DatabaseTest extends TestCase
         $lastInsertIdPost = $this->insertRowAndReturnInsertResult('posts', $post)->lastInsertId();
         $lastInsertIdPost2 = $this->insertRowAndReturnInsertResult('posts', $post2)->lastInsertId();
         $lastInsertIdPost3 = $this->insertRowAndReturnInsertResult('posts', $post3)->lastInsertId();
-        $selectStatement = $this->database->select('posts',['id'])
+        $selectStatement = $this->database->select('posts', ['id'])
             ->limit(2);
 
         /**@var \Tdw\RDB\Result\Select $result */
@@ -852,8 +852,8 @@ class DatabaseTest extends TestCase
         $lastInsertIdPost2 = $this->insertRowAndReturnInsertResult('posts', $post2)->lastInsertId();
         $lastInsertIdPost3 = $this->insertRowAndReturnInsertResult('posts', $post3)->lastInsertId();
         $lastInsertIdPost4 = $this->insertRowAndReturnInsertResult('posts', $post4)->lastInsertId();
-        $selectStatement = $this->database->select('posts',['id'])
-            ->limit(2,2);
+        $selectStatement = $this->database->select('posts', ['id'])
+            ->limit(2, 2);
 
         /**@var \Tdw\RDB\Result\Select $result */
         $result = $selectStatement->execute();
@@ -904,8 +904,8 @@ class DatabaseTest extends TestCase
         $lastInsertIdPost2 = $this->insertRowAndReturnInsertResult('posts', $post2)->lastInsertId();
         $lastInsertIdPost3 = $this->insertRowAndReturnInsertResult('posts', $post3)->lastInsertId();
         $lastInsertIdPost4 = $this->insertRowAndReturnInsertResult('posts', $post4)->lastInsertId();
-        $selectStatement = $this->database->select('posts',['id'])
-            ->where('visited','<',400)->limit(2);
+        $selectStatement = $this->database->select('posts', ['id'])
+            ->where('visited', '<', 400)->limit(2);
 
         /**@var \Tdw\RDB\Result\Select $result */
         $result = $selectStatement->execute();

@@ -6,7 +6,7 @@ php:
 
 matrix:
   allow_failures:
-    - 7.2
+    - php: 7.2
 
 install:
   composer self-update
