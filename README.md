@@ -3,6 +3,12 @@
 Simple relational database layer that abstracts SQL script to more usual persistence functions. 
 It still provides a selectSQL function for more advanced and customized queries.
 
+[![Build Status](https://travis-ci.org/tiagodevweb/rdb.svg?branch=master)](https://travis-ci.org/tiagodevweb/rdb)
+
+## Requirements
+
+PHP: >=7.1
+
 ## Install
 
 ```bash
