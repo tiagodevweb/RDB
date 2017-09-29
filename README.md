@@ -12,7 +12,7 @@ PHP: >=7.1
 ## Install
 
 ```bash
-$ composer require tdw/rdb
+$ composer require tdw/RDB
 ```
 
 ## Usage
@@ -25,7 +25,7 @@ $ composer require tdw/rdb
 require 'vendor/autoload.php';
 try {
 
-    $pdo = new PDO('mysql:host=localhost;dbname=blog_test','root','root',[
+    $pdo = new \PDO('mysql:host=localhost;dbname=blog_test','root','root',[
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
     $database = new \Tdw\RDB\Database($pdo);
@@ -66,14 +66,14 @@ try {
 }
 ```
 
-## Tdw\Database
+## Tdw\RDB\Database
 
 ```php
-->select(string $table, array $columns = ['*']): Tdw\Statement\Select
-->insert(string $table, array $parameters): Tdw\Statement\Insert
-->update(string $table, array $parameters, array $conditions): Tdw\Statement\Update
-->delete(string $table, array $conditions): Tdw\Statement\Delete
-->selectSQL(string $sql, array $parameters = []): Tdw\Statement\Select
+->select(string $table, array $columns = ['*']): Tdw\RDB\Statement\Select
+->insert(string $table, array $parameters): Tdw\RDB\Statement\Insert
+->update(string $table, array $parameters, array $conditions): Tdw\RDB\Statement\Update
+->delete(string $table, array $conditions): Tdw\RDB\Statement\Delete
+->selectSQL(string $sql, array $parameters = []): Tdw\RDB\Statement\Select
 ->beginTransaction(): bool
 ->commit(): bool
 ->rollBack(): bool
@@ -81,42 +81,42 @@ try {
  
 ## Statement Class
 
-`Tdw\Statement\Select`<br />
-`Tdw\Statement\Insert`<br />
-`Tdw\Statement\Update`<br />
-`Tdw\Statement\Delete`
+`Tdw\RDB\Statement\Select`<br />
+`Tdw\RDB\Statement\Insert`<br />
+`Tdw\RDB\Statement\Update`<br />
+`Tdw\RDB\Statement\Delete`
 
 ### Statement Method
 
-> Used only in Tdw\Statement\Select
+> Used only in Tdw\RDB\Statement\Select
 ```php
-->columns(array $columns): Tdw\Statement\Select
+->columns(array $columns): Tdw\RDB\Statement\Select
 ->join(
   string $childTable,
   string $foreignKeyChild,
   string $operator,
   string $primaryKeyParent
-): Tdw\Statement\Select
-->where(string $column, string $operator, $value): Tdw\Statement\Select
-->orWhere(string $column, string $operator, $value): Tdw\Statement\Select
-->between(string $column, $valueOne, $valueTwo): Tdw\Statement\Select
-->notBetween(string $column, $valueOne, $valueTwo): Tdw\Statement\Select
-->orBetween(string $column, $valueOne, $valueTwo): Tdw\Statement\Select
-->orNotBetween(string $column, $valueOne, $valueTwo): Tdw\Statement\Select
-->in(string $column, array $subSet): Tdw\Statement\Select
-->notIn(string $column, array $subSet): Tdw\Statement\Select
-->orIn(string $column, array $subSet): Tdw\Statement\Select
-->orNotIn(string $column, array $subSet): Tdw\Statement\Select
-->like(string $column, string $value): Tdw\Statement\Select
-->orLike(string $column, string $value): Tdw\Statement\Select
-->notLike(string $column, string $value): Tdw\Statement\Select
-->orNotLike(string $column, string $value): Tdw\Statement\Select
-->null(string $column): Tdw\Statement\Select
-->orNull(string $column): Tdw\Statement\Select
-->notNull(string $column): Tdw\Statement\Select
-->orNotNull(string $column): Tdw\Statement\Select
-->orderBy(string $columns, $designator = 'ASC'): Tdw\Statement\Select
-->limit(int $count, int $offset = 0): Tdw\Statement\Select
+): Tdw\RDB\Statement\Select
+->where(string $column, string $operator, $value): Tdw\RDB\Statement\Select
+->orWhere(string $column, string $operator, $value): Tdw\RDB\Statement\Select
+->between(string $column, $valueOne, $valueTwo): Tdw\RDB\Statement\Select
+->notBetween(string $column, $valueOne, $valueTwo): Tdw\RDB\Statement\Select
+->orBetween(string $column, $valueOne, $valueTwo): Tdw\RDB\Statement\Select
+->orNotBetween(string $column, $valueOne, $valueTwo): Tdw\RDB\Statement\Select
+->in(string $column, array $subSet): Tdw\RDB\Statement\Select
+->notIn(string $column, array $subSet): Tdw\RDB\Statement\Select
+->orIn(string $column, array $subSet): Tdw\RDB\Statement\Select
+->orNotIn(string $column, array $subSet): Tdw\RDB\Statement\Select
+->like(string $column, string $value): Tdw\RDB\Statement\Select
+->orLike(string $column, string $value): Tdw\RDB\Statement\Select
+->notLike(string $column, string $value): Tdw\RDB\Statement\Select
+->orNotLike(string $column, string $value): Tdw\RDB\Statement\Select
+->null(string $column): Tdw\RDB\Statement\Select
+->orNull(string $column): Tdw\RDB\Statement\Select
+->notNull(string $column): Tdw\RDB\Statement\Select
+->orNotNull(string $column): Tdw\RDB\Statement\Select
+->orderBy(string $columns, $designator = 'ASC'): Tdw\RDB\Statement\Select
+->limit(int $count, int $offset = 0): Tdw\RDB\Statement\Select
 ```
 
 > Used all statement
@@ -128,10 +128,10 @@ try {
  
 ## Result Class
 
-`Tdw\Result\Select`<br />
-`Tdw\Result\Insert`<br />
-`Tdw\Result\Update`<br />
-`Tdw\Result\Delete`
+`Tdw\RDB\Result\Select`<br />
+`Tdw\RDB\Result\Insert`<br />
+`Tdw\RDB\Result\Update`<br />
+`Tdw\RDB\Result\Delete`
 
 ### Result Method
 
