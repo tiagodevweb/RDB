@@ -12,7 +12,7 @@ PHP: >=7.1
 ## Install
 
 ```bash
-$ composer require tdw/RDB
+$ composer require tdw/rdb
 ```
 
 ## Usage
