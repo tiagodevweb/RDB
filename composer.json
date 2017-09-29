@@ -15,12 +15,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Tdw\\RDB\\": "src/RDB/"
+            "Tdw\\RDB\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\RDB\\": "tests/"
         }
     }
 }
