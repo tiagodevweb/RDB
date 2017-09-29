@@ -1,5 +1,8 @@
 {
     "name": "tdw/rdb",
+    "description": "Simple relational database layer that abstracts SQL script to more usual persistence functions. It still provides a selectSQL function for more advanced and customized queries.",
+    "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Tiago Lopes",
