@@ -8,6 +8,6 @@ use Tdw\RDB\Contract\Result;
 
 interface Select extends Result
 {
-    public function fetchAll(int $style): array;
-    public function fetch(int $style);
+    public function fetchAll(): array;
+    public function fetch(): array;
 }

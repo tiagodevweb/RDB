@@ -8,8 +8,6 @@ use Tdw\RDB\Contract\Result\Select as SelectResult;
 
 class Select implements SelectResult
 {
-    const TO_ARRAY = 2;
-    const TO_OBJECT = 5;
     /**
      * @var \PDOStatement
      */
@@ -25,13 +23,13 @@ class Select implements SelectResult
         return $this->statement->rowCount();
     }
 
-    public function fetchAll(int $style = self::TO_ARRAY): array
+    public function fetchAll(): array
     {
-        return $this->statement->fetchAll($style);
+        return $this->statement->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function fetch(int $style = self::TO_ARRAY)
+    public function fetch(): array
     {
-        return $this->statement->fetch($style);
+        return $this->statement->fetch(\PDO::FETCH_ASSOC);
     }
 }

@@ -17,34 +17,56 @@ $ composer require tdw/rdb
 
 ## Usage
 
-#### `base`
-
 ```php
 <?php
 
 require 'vendor/autoload.php';
-try {
 
+try {
     $pdo = new \PDO('mysql:host=localhost;dbname=blog_test','root','root',[
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
-    $database = new \Tdw\RDB\Database($pdo);
-    
+    $database = new Tdw\RDB\Database($pdo);    
+} catch (\PDOException $e) {
+    die($e->getMessage());
+}
+```
+
+```php
+<?php
+
+try {    
     //select
     $select = $database->select('posts');
     /**@var \Tdw\RDB\Result\Select $result*/
-    //$result = $select->execute();
-    //print_r($result->fetchAll());
-    
+    $result = $select->execute();
+    print_r($result->fetchAll());    
+} catch (Tdw\RDB\Exception\StatementExecuteException $e) {
+    die($e->getPrevious());
+}
+```
+
+```php
+<?php
+
+try {    
     //insert
     $insert = $database->insert(
         'posts',
         ['title'=>'Post title','description'=>'Post desc']
     );
     /**@var \Tdw\RDB\Result\Insert $result*/
-    //$result = $insert->execute();
-    //print_r($result->lastInsertId());
+    $result = $insert->execute();
+    print_r($result->lastInsertId());    
+} catch (Tdw\RDB\Exception\StatementExecuteException $e) {
+    die($e->getPrevious());
+}
+```
 
+```php
+<?php
+
+try {    
     //update
     $update = $database->update(
         'posts',
@@ -52,16 +74,23 @@ try {
         ['id' => 1]
     );
     /**@var \Tdw\RDB\Result\Update $result*/
-    //$result = $update->execute();
-    //print_r($result->rowCount());
+    $result = $update->execute();
+    print_r($result->rowCount());    
+} catch (Tdw\RDB\Exception\StatementExecuteException $e) {
+    die($e->getPrevious());
+}
+```
 
+```php
+<?php
+
+try {    
     //delete
     $delete = $database->delete('posts', ['id' => 1]);
     /**@var \Tdw\RDB\Result\Delete $result*/
-    //$result = $delete->execute();
-    //print_r($result->rowCount());
-    
-} catch (\Exception $e){
+    $result = $delete->execute();
+    print_r($result->rowCount());    
+} catch (Tdw\RDB\Exception\StatementExecuteException $e) {
     die($e->getPrevious());
 }
 ```
@@ -69,14 +98,14 @@ try {
 ## Tdw\RDB\Database
 
 ```php
-->select(string $table, array $columns = ['*']): Tdw\RDB\Statement\Select
-->insert(string $table, array $parameters): Tdw\RDB\Statement\Insert
-->update(string $table, array $parameters, array $conditions): Tdw\RDB\Statement\Update
-->delete(string $table, array $conditions): Tdw\RDB\Statement\Delete
-->selectSQL(string $sql, array $parameters = []): Tdw\RDB\Statement\Select
-->beginTransaction(): bool
-->commit(): bool
-->rollBack(): bool
+->select(string $table, array $columns = ['*'])
+->insert(string $table, array $parameters)
+->update(string $table, array $parameters, array $conditions)
+->delete(string $table, array $conditions)
+->selectSQL(string $sql, array $parameters = [])
+->beginTransaction()
+->commit()
+->rollBack()
 ```
  
 ## Statement Class
@@ -90,33 +119,33 @@ try {
 
 > Used only in Tdw\RDB\Statement\Select
 ```php
-->columns(array $columns): Tdw\RDB\Statement\Select
+->columns(array $columns)
 ->join(
   string $childTable,
   string $foreignKeyChild,
   string $operator,
   string $primaryKeyParent
-): Tdw\RDB\Statement\Select
-->where(string $column, string $operator, $value): Tdw\RDB\Statement\Select
-->orWhere(string $column, string $operator, $value): Tdw\RDB\Statement\Select
-->between(string $column, $valueOne, $valueTwo): Tdw\RDB\Statement\Select
-->notBetween(string $column, $valueOne, $valueTwo): Tdw\RDB\Statement\Select
-->orBetween(string $column, $valueOne, $valueTwo): Tdw\RDB\Statement\Select
-->orNotBetween(string $column, $valueOne, $valueTwo): Tdw\RDB\Statement\Select
-->in(string $column, array $subSet): Tdw\RDB\Statement\Select
-->notIn(string $column, array $subSet): Tdw\RDB\Statement\Select
-->orIn(string $column, array $subSet): Tdw\RDB\Statement\Select
-->orNotIn(string $column, array $subSet): Tdw\RDB\Statement\Select
-->like(string $column, string $value): Tdw\RDB\Statement\Select
-->orLike(string $column, string $value): Tdw\RDB\Statement\Select
-->notLike(string $column, string $value): Tdw\RDB\Statement\Select
-->orNotLike(string $column, string $value): Tdw\RDB\Statement\Select
-->null(string $column): Tdw\RDB\Statement\Select
-->orNull(string $column): Tdw\RDB\Statement\Select
-->notNull(string $column): Tdw\RDB\Statement\Select
-->orNotNull(string $column): Tdw\RDB\Statement\Select
-->orderBy(string $columns, $designator = 'ASC'): Tdw\RDB\Statement\Select
-->limit(int $count, int $offset = 0): Tdw\RDB\Statement\Select
+)
+->where(string $column, string $operator, $value)
+->orWhere(string $column, string $operator, $value)
+->between(string $column, $valueOne, $valueTwo)
+->notBetween(string $column, $valueOne, $valueTwo)
+->orBetween(string $column, $valueOne, $valueTwo)
+->orNotBetween(string $column, $valueOne, $valueTwo)
+->in(string $column, array $subSet)
+->notIn(string $column, array $subSet)
+->orIn(string $column, array $subSet)
+->orNotIn(string $column, array $subSet)
+->like(string $column, string $value)
+->orLike(string $column, string $value)
+->notLike(string $column, string $value)
+->orNotLike(string $column, string $value)
+->null(string $column)
+->orNull(string $column)
+->notNull(string $column)
+->orNotNull(string $column)
+->orderBy(string $columns, $designator = 'ASC')
+->limit(int $count, int $offset = 0)
 ```
 
 > Used all statement
@@ -137,16 +166,16 @@ try {
 
 > Used only in Tdw\Result\Select
 ```php
-->fetchAll(int $style = self::TO_ARRAY): array
-->fetch(int $style = self::TO_ARRAY)
+->fetchAll(): array
+->fetch(): array
 ```
 
 > Used only in Tdw\Result\Insert
 ```php
-->lastInsertId(string $name = null): int
+->lastInsertId(string $name = null)
 ```
 
 > Used all result
 ```php
-->rowCount(): int
+->rowCount()
 ```
