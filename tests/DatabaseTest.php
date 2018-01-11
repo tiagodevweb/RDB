@@ -3,7 +3,9 @@
 namespace Tests\RDB;
 
 use PHPUnit\Framework\TestCase;
+use Tdw\RDB\Collection;
 use Tdw\RDB\Database;
+use Tdw\RDB\Exception\StatementExecuteException;
 use Tdw\RDB\Result\Insert as InsertResult;
 
 class DatabaseTest extends TestCase
@@ -44,7 +46,6 @@ class DatabaseTest extends TestCase
 
     public function setUp()
     {
-        parent::setUp();
         $this->database = new Database(self::$pdo);
         $this->database->beginTransaction();
     }
@@ -53,13 +54,12 @@ class DatabaseTest extends TestCase
     {
         $this->database->rollBack();
         $this->database = null;
-        parent::tearDown();
     }
 
     /**
-     * @group integration-database-insert
+     * @test
      */
-    public function testShouldInsertRowInDatabase()
+    public function should_insert_row_in_database()
     {
         //arrange
         $parameters = [
@@ -79,9 +79,9 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select
+     * @test
      */
-    public function testShouldReturnDataExpected()
+    public function should_return_data_expected()
     {
         //arrange
         $post = [
@@ -98,16 +98,16 @@ class DatabaseTest extends TestCase
         /**@var \Tdw\RDB\Result\Select $result */
         $result = $selectStatement->execute();
         //act
-        $expected = [$post,$post2];
+        $expected = new Collection([$post,$post2]);
         $actual = $result->fetchAll();
         //assert
         $this->assertEquals($expected, $actual);
     }
 
     /**
-     * @group integration-database-select-where
+     * @test
      */
-    public function testShouldReturnDataExpectedWithWhere()
+    public function should_return_data_expected_with_where()
     {
         //arrange
         $post = [
@@ -135,13 +135,12 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-where
-     * @expectedException \Tdw\RDB\Exception\StatementExecuteException
-     * @expectedExceptionMessage The where clause should be called before Tdw\RDB\Statement\Select::orWhere
+     * @test
      */
-    public function testShouldThrowAnExceptionInOrWhere()
+    public function should_throw_an_exception_in_or_where()
     {
-        //arrange
+        $this->expectException(StatementExecuteException::class);
+        $this->expectExceptionMessage('The where clause should be called before Tdw\RDB\Statement\Select::orWhere');
         $post = [
             'title' => 'Title RDB Test',
             'description' => 'Description RDB Test'
@@ -158,9 +157,9 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-where
+     * @test
      */
-    public function testShouldReturnDataExpectedWithWhereOrWhere()
+    public function should_return_data_expected_with_where_or_where()
     {
         //arrange
         $post = [
@@ -182,17 +181,17 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = [$post2, $post];
+        $expected = new Collection([$post2, $post]);
         $actual = $result->fetchAll();
 
         //assert
-        $this->assertArraySubset($expected, $actual);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
-     * @group integration-database-select-join
+     * @test
      */
-    public function testShouldReturnDataExpectedWithJoin()
+    public function should_return_data_expected_with_join()
     {
         //arrange
         $category = [
@@ -222,9 +221,9 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-join
+     * @test
      */
-    public function testShouldReturnDataExpectedWithJoinAndAlias()
+    public function should_return_data_expected_with_join_and_alias()
     {
         //arrange
         $category = [
@@ -256,9 +255,9 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-between
+     * @test
      */
-    public function testShouldReturnDataExpectedWithBetween()
+    public function should_return_data_expected_with_between()
     {
         //arrange
         $category = [
@@ -286,7 +285,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = [['id'=>$lastInsertIdPost]];
+        $expected = new Collection([['id'=>$lastInsertIdPost]]);
         $actual = $result->fetchAll();
 
         //assert
@@ -294,20 +293,19 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-between
-     * @expectedException \Tdw\RDB\Exception\StatementExecuteException
-     * @expectedExceptionMessage The where clause should be called before Tdw\RDB\Statement\Select::orBetween
+     * @test
      */
-    public function testShouldThrowAnExceptionInOrBetween()
+    public function should_throw_an_exception_in_or_between()
     {
-        //arrange
+        $this->expectException(StatementExecuteException::class);
+        $this->expectExceptionMessage('The where clause should be called before Tdw\RDB\Statement\Select::orBetween');
         $this->database->select('posts', ['id'])->orBetween('visited', 50, 150);
     }
 
     /**
-     * @group integration-database-select-between
+     * @test
      */
-    public function testShouldReturnDataExpectedWithNotBetween()
+    public function should_return_data_expected_with_not_between()
     {
         //arrange
         $category = [
@@ -335,7 +333,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = [['id'=>$lastInsertIdPost]];
+        $expected = new Collection([['id'=>$lastInsertIdPost]]);
         $actual = $result->fetchAll();
 
         //assert
@@ -343,20 +341,19 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-between
-     * @expectedException \Tdw\RDB\Exception\StatementExecuteException
-     * @expectedExceptionMessage The where clause should be called before Tdw\RDB\Statement\Select::orNotBetween
+     * @test
      */
-    public function testShouldThrowAnExceptionInOrNotBetween()
+    public function should_throw_an_exception_in_or_not_between()
     {
-        //arrange
+        $this->expectException(StatementExecuteException::class);
+        $this->expectExceptionMessage('The where clause should be called before Tdw\RDB\Statement\Select::orNotBetween');
         $this->database->select('posts', ['id'])->orNotBetween('visited', 150, 250);
     }
 
     /**
-     * @group integration-database-select-in
+     * @test
      */
-    public function testShouldReturnDataExpectedWithIn()
+    public function should_return_data_expected_with_in()
     {
         //arrange
         $category = [
@@ -384,7 +381,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = [['id'=>$lastInsertIdPost]];
+        $expected = new Collection([['id'=>$lastInsertIdPost]]);
         $actual = $result->fetchAll();
 
         //assert
@@ -392,20 +389,19 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-in
-     * @expectedException \Tdw\RDB\Exception\StatementExecuteException
-     * @expectedExceptionMessage The where clause should be called before Tdw\RDB\Statement\Select::orIn
+     * @test
      */
-    public function testShouldThrowAnExceptionInOrIn()
+    public function should_throw_an_exception_in_or_in()
     {
-        //arrange
+        $this->expectException(StatementExecuteException::class);
+        $this->expectExceptionMessage('The where clause should be called before Tdw\RDB\Statement\Select::orIn');
         $this->database->select('posts', ['id'])->orIn('visited', [100,101,102]);
     }
 
     /**
-     * @group integration-database-select-in
+     * @test
      */
-    public function testShouldReturnDataExpectedWithNotIn()
+    public function should_return_data_expected_with_not_in()
     {
         //arrange
         $category = [
@@ -433,7 +429,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = [['id'=>$lastInsertIdPost]];
+        $expected = new Collection([['id'=>$lastInsertIdPost]]);
         $actual = $result->fetchAll();
 
         //assert
@@ -441,20 +437,19 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-in
-     * @expectedException \Tdw\RDB\Exception\StatementExecuteException
-     * @expectedExceptionMessage The where clause should be called before Tdw\RDB\Statement\Select::orNotIn
+     * @test
      */
-    public function testShouldThrowAnExceptionInOrNotIn()
+    public function should_throw_an_exception_in_or_not_in()
     {
-        //arrange
+        $this->expectException(StatementExecuteException::class);
+        $this->expectExceptionMessage('The where clause should be called before Tdw\RDB\Statement\Select::orNotIn');
         $this->database->select('posts', ['id'])->orNotIn('visited', [200,201,202]);
     }
 
     /**
-     * @group integration-database-select-like
+     * @test
      */
-    public function testShouldReturnDataExpectedWithLike()
+    public function should_return_data_expected_with_like()
     {
         //arrange
         $category = [
@@ -482,7 +477,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = [['id'=>$lastInsertIdPost]];
+        $expected = new Collection([['id'=>$lastInsertIdPost]]);
         $actual = $result->fetchAll();
 
         //assert
@@ -490,20 +485,19 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-like
-     * @expectedException \Tdw\RDB\Exception\StatementExecuteException
-     * @expectedExceptionMessage The where clause should be called before Tdw\RDB\Statement\Select::orLike
+     * @test
      */
-    public function testShouldThrowAnExceptionInOrLike()
+    public function should_throw_an_exception_in_or_like()
     {
-        //arrange
+        $this->expectException(StatementExecuteException::class);
+        $this->expectExceptionMessage('The where clause should be called before Tdw\RDB\Statement\Select::orLike');
         $this->database->select('posts', ['id'])->orLike('title', '%TestLike');
     }
 
     /**
-     * @group integration-database-select-like
+     * @test
      */
-    public function testShouldReturnDataExpectedWithNotLike()
+    public function should_return_data_expected_with_not_like()
     {
         //arrange
         $category = [
@@ -531,7 +525,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = [['id'=>$lastInsertIdPost]];
+        $expected = new Collection([['id'=>$lastInsertIdPost]]);
         $actual = $result->fetchAll();
 
         //assert
@@ -539,20 +533,19 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-like
-     * @expectedException \Tdw\RDB\Exception\StatementExecuteException
-     * @expectedExceptionMessage The where clause should be called before Tdw\RDB\Statement\Select::orNotLike
+     * @test
      */
-    public function testShouldThrowAnExceptionInOrNotLike()
+    public function should_throw_an_exception_in_or_not_like()
     {
-        //arrange
+        $this->expectException(StatementExecuteException::class);
+        $this->expectExceptionMessage('The where clause should be called before Tdw\RDB\Statement\Select::orNotLike');
         $this->database->select('posts', ['id'])->orNotLike('title', '%Test 2');
     }
 
     /**
-     * @group integration-database-select-null
+     * @test
      */
-    public function testShouldReturnDataExpectedWithNull()
+    public function should_return_data_expected_with_null()
     {
         //arrange
         $category = [
@@ -580,7 +573,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = [['id'=>$lastInsertIdPost]];
+        $expected = new Collection([['id'=>$lastInsertIdPost]]);
         $actual = $result->fetchAll();
 
         //assert
@@ -588,20 +581,19 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-null
-     * @expectedException \Tdw\RDB\Exception\StatementExecuteException
-     * @expectedExceptionMessage The where clause should be called before Tdw\RDB\Statement\Select::orNull
+     * @test
      */
-    public function testShouldThrowAnExceptionInOrNull()
+    public function should_throw_an_exception_in_or_null()
     {
-        //arrange
+        $this->expectException(StatementExecuteException::class);
+        $this->expectExceptionMessage('The where clause should be called before Tdw\RDB\Statement\Select::orNull');
         $this->database->select('posts', ['id'])->orNull('category_id');
     }
 
     /**
-     * @group integration-database-select-null
+     * @test
      */
-    public function testShouldReturnDataExpectedWithNotNull()
+    public function should_return_data_expected_with_not_null()
     {
         //arrange
         $category = [
@@ -629,7 +621,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = [['id'=>$lastInsertIdPost]];
+        $expected = new Collection([['id'=>$lastInsertIdPost]]);
         $actual = $result->fetchAll();
 
         //assert
@@ -637,20 +629,19 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-null
-     * @expectedException \Tdw\RDB\Exception\StatementExecuteException
-     * @expectedExceptionMessage The where clause should be called before Tdw\RDB\Statement\Select::orNotNull
+     * @test
      */
-    public function testShouldThrowAnExceptionInOrNotNull()
+    public function should_throw_an_exception_in_or_not_null()
     {
-        //arrange
+        $this->expectException(StatementExecuteException::class);
+        $this->expectExceptionMessage('The where clause should be called before Tdw\RDB\Statement\Select::orNotNull');
         $this->database->select('posts', ['id'])->orNotNull('category_id');
     }
 
     /**
-     * @group integration-database-select-order
+     * @test
      */
-    public function testShouldReturnDataExpectedWithOrderByAsc()
+    public function should_return_data_expected_with_order_by_asc()
     {
         //arrange
         $category = [
@@ -678,7 +669,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = [['id'=>$lastInsertIdPost], ['id'=>$lastInsertIdPost2]];
+        $expected = new Collection([['id'=>$lastInsertIdPost], ['id'=>$lastInsertIdPost2]]);
         $actual = $result->fetchAll();
 
         //assert
@@ -686,9 +677,9 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-order
+     * @test
      */
-    public function testShouldReturnDataExpectedWithOrderByDesc()
+    public function should_return_data_expected_with_order_by_desc()
     {
         //arrange
         $category = [
@@ -716,7 +707,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = [['id'=>$lastInsertIdPost2], ['id'=>$lastInsertIdPost]];
+        $expected = new Collection([['id'=>$lastInsertIdPost2], ['id'=>$lastInsertIdPost]]);
         $actual = $result->fetchAll();
 
         //assert
@@ -724,9 +715,9 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-order
+     * @test
      */
-    public function testShouldReturnDataExpectedWithWhereAndOrderByDesc()
+    public function should_return_data_expected_with_where_and_order_by_desc()
     {
         //arrange
         $category = [
@@ -762,7 +753,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = [['id'=>$lastInsertIdPost3], ['id'=>$lastInsertIdPost2]];
+        $expected = new Collection([['id'=>$lastInsertIdPost3], ['id'=>$lastInsertIdPost2]]);
         $actual = $result->fetchAll();
 
         //assert
@@ -770,9 +761,9 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-limit
+     * @test
      */
-    public function testShouldReturnDataExpectedWithLimit()
+    public function should_return_data_expected_with_limit()
     {
         //arrange
         $category = [
@@ -807,7 +798,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = [['id'=>$lastInsertIdPost], ['id'=>$lastInsertIdPost2]];
+        $expected = new Collection([['id'=>$lastInsertIdPost], ['id'=>$lastInsertIdPost2]]);
         $actual = $result->fetchAll();
 
         //assert
@@ -815,9 +806,9 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-limit
+     * @test
      */
-    public function testShouldReturnDataExpectedWithLimitAndOffset()
+    public function should_return_data_expected_with_limit_and_offset()
     {
         //arrange
         $category = [
@@ -859,7 +850,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = [['id'=>$lastInsertIdPost3], ['id'=>$lastInsertIdPost4]];
+        $expected = new Collection([['id'=>$lastInsertIdPost3], ['id'=>$lastInsertIdPost4]]);
         $actual = $result->fetchAll();
 
         //assert
@@ -867,9 +858,9 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-select-limit
+     * @test
      */
-    public function testShouldReturnDataExpectedWithWhereAndLimit()
+    public function should_return_data_expected_with_where_and_limit()
     {
         //arrange
         $category = [
@@ -911,7 +902,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = [['id'=>$lastInsertIdPost], ['id'=>$lastInsertIdPost2]];
+        $expected = new Collection([['id'=>$lastInsertIdPost], ['id'=>$lastInsertIdPost2]]);
         $actual = $result->fetchAll();
 
         //assert
@@ -919,9 +910,9 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-update
+     * @test
      */
-    public function testShouldUpdatePostOnDatabase()
+    public function should_update_post_on_database()
     {
         //arrange
         $post = [
@@ -948,9 +939,9 @@ class DatabaseTest extends TestCase
     }
 
     /**
-     * @group integration-database-delete
+     * @test
      */
-    public function testShouldDeletePostOnDatabase()
+    public function should_delete_post_on_database()
     {
         //arrange
         $post = [
@@ -972,6 +963,11 @@ class DatabaseTest extends TestCase
         $this->assertEquals($expected, $resultDelete->rowCount());
     }
 
+    /**
+     * @param string $table
+     * @param array $parameters
+     * @return InsertResult
+     */
     private function insertRowAndReturnInsertResult(string $table, array $parameters): InsertResult
     {
         $insertStatement = $this->database->insert($table, $parameters);

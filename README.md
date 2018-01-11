@@ -7,7 +7,7 @@ It still provides a selectSQL function for more advanced and customized queries.
 
 ## Requirements
 
-PHP: >=7.1
+PHP: >=7.0
 
 ## Install
 
@@ -17,19 +17,22 @@ $ composer require tdw/rdb
 
 ## Usage
 
+#### require autoload
+
 ```php
 <?php
 
-require 'vendor/autoload.php';
+$config = [
+    'db_driver' => 'mysql',
+    'db_host' => 'localhost',
+    'db_port' => '3306',
+    'db_name' => 'blog',
+    'db_user' => 'root',
+    'db_pass' => 'root'
+];
 
-try {
-    $pdo = new \PDO('mysql:host=localhost;dbname=blog_test','root','root',[
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-    ]);
-    $database = new Tdw\RDB\Database($pdo);    
-} catch (\PDOException $e) {
-    die($e->getMessage());
-}
+$rdb = new \Tdw\RDB\Wrapper($config);
+$database = $rdb->getDatabase();
 ```
 
 ```php

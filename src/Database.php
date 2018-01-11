@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tdw\RDB;
 
-use Tdw\RDB\Contract\Database as IDatabase;
-use Tdw\RDB\Contract\Result\Select as ISelectResult;
 use Tdw\RDB\Exception\DatabaseExecuteException;
 use Tdw\RDB\Result\Select as SelectResult;
+use Tdw\RDB\Contract\Database as DatabaseInterface;
+use Tdw\RDB\Contract\Result\Select as ISelectResult;
 use Tdw\RDB\Contract\Statement\Delete as DeleteStatement;
 use Tdw\RDB\Contract\Statement\Insert as InsertStatement;
 use Tdw\RDB\Contract\Statement\Update as UpdateStatement;
@@ -17,7 +17,7 @@ use Tdw\RDB\Statement\Insert;
 use Tdw\RDB\Statement\Select;
 use Tdw\RDB\Statement\Update;
 
-class Database implements IDatabase
+class Database implements DatabaseInterface
 {
     /**
      * @var \PDO

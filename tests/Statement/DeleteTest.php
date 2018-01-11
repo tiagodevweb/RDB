@@ -8,9 +8,9 @@ use Tdw\RDB\Statement\Delete;
 class DeleteTest extends TestCase
 {
     /**
-     * @group unity-delete
+     * @test
      */
-    public function testShouldBeDeleteFromEmployeesWhereId()
+    public function test_should_be_delete_from_employees_where_id()
     {
         //arrange
         $id = 25;

@@ -281,9 +281,10 @@ class Select implements SelectStatement
 
     /**
      * @param $method
+     * @return void
      * @throws StatementExecuteException
      */
-    private function whereExists($method): void
+    private function whereExists($method)
     {
         if (!strpos($this->sql(), 'WHERE')) {
             throw new StatementExecuteException("The where clause should be called before {$method}");

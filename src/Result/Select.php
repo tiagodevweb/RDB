@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tdw\RDB\Result;
 
+use Tdw\RDB\Collection;
+use Tdw\RDB\Contract\Collection as CollectionInterface;
 use Tdw\RDB\Contract\Result\Select as SelectResult;
 
 class Select implements SelectResult
@@ -23,9 +25,9 @@ class Select implements SelectResult
         return $this->statement->rowCount();
     }
 
-    public function fetchAll(): array
+    public function fetchAll(): CollectionInterface
     {
-        return $this->statement->fetchAll(\PDO::FETCH_ASSOC);
+        return new Collection($this->statement->fetchAll(\PDO::FETCH_ASSOC));
     }
 
     public function fetch(): array
