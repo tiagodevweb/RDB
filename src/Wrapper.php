@@ -39,7 +39,8 @@ class Wrapper
         try {
             return new Database(new \PDO(
                 "{$db_driver}:host={$db_host};dbname={$db_name};port={$db_port}",
-                $db_user, $db_pass,
+                $db_user,
+                $db_pass,
                 isset($this->parameters['options']) &&
                 is_array($this->parameters['options']) ?
                     array_merge($this->default_options, $this->parameters['options']) :
@@ -62,5 +63,4 @@ class Wrapper
         }
         throw new \DomainException("Key {$key} not found");
     }
-
 }
