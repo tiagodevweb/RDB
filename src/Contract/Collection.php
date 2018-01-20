@@ -34,7 +34,7 @@ interface Collection extends \IteratorAggregate, \Countable
     public function keys(): array;
 
     /**
-     * @return mixed
+     * @return array
      */
     public function values();
 

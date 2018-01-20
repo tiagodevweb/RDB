@@ -64,7 +64,7 @@ class Collection implements CollectionInterface
      */
     public function values()
     {
-        $this->items = array_values($this->items);
+        return array_values($this->items);
     }
 
     /**

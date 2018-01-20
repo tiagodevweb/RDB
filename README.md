@@ -153,9 +153,8 @@ try {
 
 > Used all statement
 ```php
-->execute()
+->execute(): //respective result
 ->parameters(): array
-->__toString()
 ```
  
 ## Result Class
@@ -169,7 +168,7 @@ try {
 
 > Used only in Tdw\Result\Select
 ```php
-->fetchAll(): array
+->fetchAll(): \Tdw\RDB\Contract\Collection
 ->fetch(): array
 ```
 
@@ -181,4 +180,26 @@ try {
 > Used all result
 ```php
 ->rowCount()
+```
+
+### Collection Method
+```php
+->get($key);
+->all(): array;
+->isEmpty(): bool;
+->contains($value): bool;
+->keys(): array;
+->values(): array;
+->shift();
+->pop();
+->push($value);
+->prepend($value);
+->remove($key);
+->search($value);
+->sort(\Closure $callback);
+->each(\Closure $callback);
+->filter(\Closure $callback): Collection;
+->map(\Closure $callback): Collection;
+->add($key, $value): Collection;
+->clear();
 ```

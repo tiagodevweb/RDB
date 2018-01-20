@@ -55,6 +55,7 @@ class Select implements SelectStatement
      */
     private $limitation;
 
+
     public function __construct(\PDO $pdo, string $table, array $columns = ['*'])
     {
         $this->pdo = $pdo;
