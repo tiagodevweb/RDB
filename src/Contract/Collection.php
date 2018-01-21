@@ -8,9 +8,10 @@ interface Collection extends \IteratorAggregate, \Countable
 {
     /**
      * @param $key
+     * @param mixed $returnIfNotExists
      * @return mixed
      */
-    public function get($key);
+    public function get($key, $returnIfNotExists = null);
 
     /**
      * @return array
@@ -29,14 +30,14 @@ interface Collection extends \IteratorAggregate, \Countable
     public function contains($value): bool;
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function keys(): array;
+    public function keys(): Collection;
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function values();
+    public function values(): Collection;
 
     /**
      * @return mixed
@@ -74,15 +75,15 @@ interface Collection extends \IteratorAggregate, \Countable
 
     /**
      * @param \Closure $callback
-     * @return mixed
+     * @return bool
      */
-    public function sort(\Closure $callback);
+    public function sort(\Closure $callback): bool;
 
     /**
      * @param \Closure $callback
-     * @return mixed
+     * @return Collection
      */
-    public function each(\Closure $callback);
+    public function each(\Closure $callback): Collection;
 
     /**
      * @param \Closure $callback

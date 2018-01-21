@@ -26,6 +26,18 @@ class CollectionTest extends TestCase
         $this->assertEquals('James', $this->collection->get(2));
     }
 
+    public function test_should_get_item_by_null()
+    {
+        $this->assertNull($this->collection->get('xpto'));
+    }
+
+    public function test_should_get_item_by_custom_value()
+    {
+        $this->assertEquals(
+            'custom-value',
+            $this->collection->get('xpto', 'custom-value'));
+    }
+
     public function test_should_get_all_items()
     {
         $this->assertEquals($this->items, $this->collection->all());
@@ -36,11 +48,23 @@ class CollectionTest extends TestCase
         $this->assertTrue($this->collection->contains('Jack'));
     }
 
+    public function test_should_return_the_item_values()
+    {
+        $collection = new Collection([
+            'name' => 'George',
+            'age' => 25,
+        ]);
+        $collection = $collection->values();
+
+        $this->assertEquals('George', $collection->get(0));
+        $this->assertEquals(25, $collection->get(1));
+    }
+
     public function test_should_return_the_item_keys()
     {
-        $keys = $this->collection->keys();
+        $collection = $this->collection->keys();
 
-        $this->assertEquals([0,1,2,3,4], $keys);
+        $this->assertEquals([0,1,2,3,4], $collection->all());
     }
 
     public function test_should_get_and_remove_the_first_item()
@@ -92,19 +116,22 @@ class CollectionTest extends TestCase
 
     public function test_should_sort_items_in_collection_and_reset_keys()
     {
-        $this->collection->sort(function ($a, $b) {
+        $numbers = new Collection([5,6,2,8,1,3,9]);
+        $numbers->sort(function ($a, $b) {
             if ($a == $b) return 0;
 
             return ($a < $b) ? -1 : 1;
         });
 
-        $this->collection->values();
+        $collection = $numbers->values();
 
-        $this->assertEquals('George', $this->collection->get(0));
-        $this->assertEquals('Jack', $this->collection->get(1));
-        $this->assertEquals('James', $this->collection->get(2));
-        $this->assertEquals('Olivia', $this->collection->get(3));
-        $this->assertEquals('Sophie', $this->collection->get(4));
+        $this->assertEquals(1, $collection->get(0));
+        $this->assertEquals(2, $collection->get(1));
+        $this->assertEquals(3, $collection->get(2));
+        $this->assertEquals(5, $collection->get(3));
+        $this->assertEquals(6, $collection->get(4));
+        $this->assertEquals(8, $collection->get(5));
+        $this->assertEquals(9, $collection->get(6));
     }
 
     public function test_should_run_callback_on_each_item()

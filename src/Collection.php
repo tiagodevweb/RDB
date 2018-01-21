@@ -22,9 +22,12 @@ class Collection implements CollectionInterface
     /**
      * @inheritdoc
      */
-    public function get($key)
+    public function get($key, $returnIfNotExists = null)
     {
-        return $this->items[$key];
+        if (isset($this->items[$key])) {
+            return $this->items[$key];
+        }
+        return $returnIfNotExists;
     }
 
     /**
@@ -54,17 +57,17 @@ class Collection implements CollectionInterface
     /**
      * @inheritdoc
      */
-    public function keys(): array
+    public function keys(): CollectionInterface
     {
-        return array_keys($this->items);
+        return new Collection(array_keys($this->items));
     }
 
     /**
      * @inheritdoc
      */
-    public function values()
+    public function values(): CollectionInterface
     {
-        return array_values($this->items);
+        return new Collection(array_values($this->items));
     }
 
     /**
@@ -118,17 +121,17 @@ class Collection implements CollectionInterface
     /**
      * @inheritdoc
      */
-    public function sort(\Closure $callback)
+    public function sort(\Closure $callback): bool
     {
-        uasort($this->items, $callback);
+        return uasort($this->items, $callback);
     }
 
     /**
      * @inheritdoc
      */
-    public function each(\Closure $callback)
+    public function each(\Closure $callback): CollectionInterface
     {
-        array_map($callback, $this->items);
+        return new Collection(array_map($callback, $this->items));
     }
 
     /**
