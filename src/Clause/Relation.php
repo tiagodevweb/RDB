@@ -8,7 +8,7 @@ use Tdw\RDB\Contract\Clause\Relation as IRelation;
 
 class Relation implements IRelation
 {
-    private $join;
+    private $joins = [];
 
     public function join(
         string $childTable,
@@ -17,7 +17,7 @@ class Relation implements IRelation
         string $primaryKeyParent,
         string $type = 'INNER'
     ) {
-        $this->join = sprintf(
+        $this->joins[] = sprintf(
             " %s JOIN %s ON (%s %s %s)",
             $type,
             $childTable,
@@ -29,6 +29,11 @@ class Relation implements IRelation
 
     public function __toString()
     {
-        return $this->join ?? '';
+        return empty($this->joins) ? '' : $this->concatJoin();
+    }
+
+    private function concatJoin(): string
+    {
+        return ' ' . ltrim(implode('', $this->joins), ' ');
     }
 }

@@ -81,6 +81,31 @@ class DatabaseTest extends TestCase
     /**
      * @test
      */
+    public function should_return_data_expected_with_select_sql()
+    {
+        //arrange
+        $post = [
+            'title' => 'Title RDB Test',
+            'description' => 'Description RDB Test'
+        ];
+        $post2 = [
+            'title' => 'Title RDB Test 2',
+            'description' => 'Description RDB Test 2'
+        ];
+        $this->insertRowAndReturnInsertResult('posts', $post);
+        $this->insertRowAndReturnInsertResult('posts', $post2);
+        /**@var \IWeb\Core\RDB\Result\Select $result */
+        $result = $this->database->selectSQL('select title, description from posts');
+        //act
+        $expected = new Collection([$post,$post2]);
+        $actual = $result->fetchAll();
+        //assert
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
     public function should_return_data_expected()
     {
         //arrange

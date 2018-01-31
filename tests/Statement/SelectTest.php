@@ -83,6 +83,22 @@ class SelectTest extends TestCase
         $this->assertEquals($expectedParameters, $this->select->parameters());
     }
 
+    public function testShouldBeAssignedParametersAndSelectAllFromEmployeesJoinUsersAndJoinRoles()
+    {
+        //arrange
+        $this->select->join('users', 'users.id', '=', 'employees.user_id')
+            ->join('roles', 'roles.id', '=', 'users.role_id');
+
+        //act
+        $expectedToString = "SELECT * FROM employees INNER JOIN users ON (users.id = employees.user_id) " .
+                                                    "INNER JOIN roles ON (roles.id = users.role_id)";
+        $expectedParameters = [];
+
+        //assert
+        $this->assertEquals($expectedToString, (string)$this->select);
+        $this->assertEquals($expectedParameters, $this->select->parameters());
+    }
+
     /**
      * @group unitary-select-where
      */
