@@ -30,7 +30,9 @@ class Select implements SelectResult
     public function fetchAll(): CollectionInterface
     {
         $collection = new Collection($this->statement->fetchAll(\PDO::FETCH_ASSOC));
-        return $collection->each(function ($item) { return new Item($item); });
+        return $collection->each(function ($item) {
+            return new Item($item);
+        });
     }
 
     public function fetch(): ItemInterface
