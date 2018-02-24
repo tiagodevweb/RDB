@@ -169,7 +169,7 @@ try {
 > Used only in Tdw\Result\Select
 ```php
 ->fetchAll(): \Tdw\RDB\Contract\Collection
-->fetch(): array
+->fetch(): \Tdw\RDB\Contract\Item
 ```
 
 > Used only in Tdw\Result\Insert

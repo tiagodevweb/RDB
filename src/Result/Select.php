@@ -6,7 +6,9 @@ namespace Tdw\RDB\Result;
 
 use Tdw\RDB\Collection;
 use Tdw\RDB\Contract\Collection as CollectionInterface;
+use Tdw\RDB\Contract\Item as ItemInterface;
 use Tdw\RDB\Contract\Result\Select as SelectResult;
+use Tdw\RDB\Item;
 
 class Select implements SelectResult
 {
@@ -27,11 +29,12 @@ class Select implements SelectResult
 
     public function fetchAll(): CollectionInterface
     {
-        return new Collection($this->statement->fetchAll(\PDO::FETCH_ASSOC));
+        $collection = new Collection($this->statement->fetchAll(\PDO::FETCH_ASSOC));
+        return $collection->each(function ($item) { return new Item($item); });
     }
 
-    public function fetch(): array
+    public function fetch(): ItemInterface
     {
-        return $this->statement->fetch(\PDO::FETCH_ASSOC);
+        return new Item($this->statement->fetch(\PDO::FETCH_ASSOC));
     }
 }

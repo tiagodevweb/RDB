@@ -246,13 +246,7 @@ class Select implements SelectStatement
     public function execute(): ISelectResult
     {
         try {
-            if (empty($this->parameters())) {
-                $stmt = $this->pdo->query((string)$this);
-            } else {
-                $stmt = $this->pdo->prepare((string)$this);
-                $stmt->execute($this->parameters());
-            }
-            return new SelectResult($stmt);
+            return new SelectResult($this->queryOrPrepare());
         } catch (\PDOException $e) {
             throw new StatementExecuteException("Execution of select statement failed", 0, $e);
         }
@@ -290,5 +284,18 @@ class Select implements SelectStatement
         if (!strpos($this->sql(), 'WHERE')) {
             throw new StatementExecuteException("The where clause should be called before {$method}");
         }
+    }
+
+    /**
+     * @return \PDOStatement
+     */
+    private function queryOrPrepare(): \PDOStatement
+    {
+        if (sizeof($this->parameters()) === 0) {
+            return $this->pdo->query((string)$this);
+        }
+        $stmt = $this->pdo->prepare((string)$this);
+        $stmt->execute($this->parameters());
+        return $stmt;
     }
 }

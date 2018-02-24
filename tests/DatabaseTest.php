@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Tdw\RDB\Collection;
 use Tdw\RDB\Database;
 use Tdw\RDB\Exception\StatementExecuteException;
+use Tdw\RDB\Item;
 use Tdw\RDB\Result\Insert as InsertResult;
 
 class DatabaseTest extends TestCase
@@ -94,10 +95,10 @@ class DatabaseTest extends TestCase
         ];
         $this->insertRowAndReturnInsertResult('posts', $post);
         $this->insertRowAndReturnInsertResult('posts', $post2);
-        /**@var \IWeb\Core\RDB\Result\Select $result */
+        /**@var \Tdw\RDB\Result\Select $result */
         $result = $this->database->selectSQL('select title, description from posts');
         //act
-        $expected = new Collection([$post,$post2]);
+        $expected = $this->collectionEach(new Collection([$post,$post2]));
         $actual = $result->fetchAll();
         //assert
         $this->assertEquals($expected, $actual);
@@ -123,7 +124,7 @@ class DatabaseTest extends TestCase
         /**@var \Tdw\RDB\Result\Select $result */
         $result = $selectStatement->execute();
         //act
-        $expected = new Collection([$post,$post2]);
+        $expected = $this->collectionEach(new Collection([$post,$post2]));
         $actual = $result->fetchAll();
         //assert
         $this->assertEquals($expected, $actual);
@@ -152,11 +153,11 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = $post;
+        $expected = new Item($post);
         $actual = $result->fetch();
 
         //assert
-        $this->assertArraySubset($expected, $actual);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -206,7 +207,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = new Collection([$post2, $post]);
+        $expected = $this->collectionEach(new Collection([$post2, $post]));
         $actual = $result->fetchAll();
 
         //assert
@@ -238,7 +239,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = array_merge($category, $post);
+        $expected = new Item(array_merge($category, $post));
         $actual = $result->fetch();
 
         //assert
@@ -272,7 +273,7 @@ class DatabaseTest extends TestCase
         //act
         unset($post['description']);
         unset($post['category_id']);
-        $expected = array_merge($category, $post);
+        $expected = new Item(array_merge($category, $post));
         $actual = $result->fetch();
 
         //assert
@@ -310,7 +311,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = new Collection([['id'=>$lastInsertIdPost]]);
+        $expected = $this->collectionEach(new Collection([['id'=>$lastInsertIdPost]]));
         $actual = $result->fetchAll();
 
         //assert
@@ -358,7 +359,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = new Collection([['id'=>$lastInsertIdPost]]);
+        $expected = $this->collectionEach(new Collection([['id'=>$lastInsertIdPost]]));
         $actual = $result->fetchAll();
 
         //assert
@@ -406,7 +407,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = new Collection([['id'=>$lastInsertIdPost]]);
+        $expected = $this->collectionEach(new Collection([['id'=>$lastInsertIdPost]]));
         $actual = $result->fetchAll();
 
         //assert
@@ -454,7 +455,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = new Collection([['id'=>$lastInsertIdPost]]);
+        $expected = $this->collectionEach(new Collection([['id'=>$lastInsertIdPost]]));
         $actual = $result->fetchAll();
 
         //assert
@@ -502,7 +503,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = new Collection([['id'=>$lastInsertIdPost]]);
+        $expected = $this->collectionEach(new Collection([['id'=>$lastInsertIdPost]]));
         $actual = $result->fetchAll();
 
         //assert
@@ -550,7 +551,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = new Collection([['id'=>$lastInsertIdPost]]);
+        $expected = $this->collectionEach(new Collection([['id'=>$lastInsertIdPost]]));
         $actual = $result->fetchAll();
 
         //assert
@@ -598,7 +599,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = new Collection([['id'=>$lastInsertIdPost]]);
+        $expected = $this->collectionEach(new Collection([['id'=>$lastInsertIdPost]]));
         $actual = $result->fetchAll();
 
         //assert
@@ -646,7 +647,7 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = new Collection([['id'=>$lastInsertIdPost]]);
+        $expected = $this->collectionEach(new Collection([['id'=>$lastInsertIdPost]]));
         $actual = $result->fetchAll();
 
         //assert
@@ -694,7 +695,9 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = new Collection([['id'=>$lastInsertIdPost], ['id'=>$lastInsertIdPost2]]);
+        $expected = $this->collectionEach(
+            new Collection([['id'=>$lastInsertIdPost], ['id'=>$lastInsertIdPost2]])
+        );
         $actual = $result->fetchAll();
 
         //assert
@@ -732,7 +735,9 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = new Collection([['id'=>$lastInsertIdPost2], ['id'=>$lastInsertIdPost]]);
+        $expected = $this->collectionEach(
+            new Collection([['id'=>$lastInsertIdPost2], ['id'=>$lastInsertIdPost]])
+        );
         $actual = $result->fetchAll();
 
         //assert
@@ -778,7 +783,9 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = new Collection([['id'=>$lastInsertIdPost3], ['id'=>$lastInsertIdPost2]]);
+        $expected = $this->collectionEach(
+            new Collection([['id'=>$lastInsertIdPost3], ['id'=>$lastInsertIdPost2]])
+        );
         $actual = $result->fetchAll();
 
         //assert
@@ -823,7 +830,9 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = new Collection([['id'=>$lastInsertIdPost], ['id'=>$lastInsertIdPost2]]);
+        $expected = $this->collectionEach(
+            new Collection([['id'=>$lastInsertIdPost], ['id'=>$lastInsertIdPost2]])
+        );
         $actual = $result->fetchAll();
 
         //assert
@@ -875,7 +884,9 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = new Collection([['id'=>$lastInsertIdPost3], ['id'=>$lastInsertIdPost4]]);
+        $expected = $this->collectionEach(
+            new Collection([['id'=>$lastInsertIdPost3], ['id'=>$lastInsertIdPost4]])
+        );
         $actual = $result->fetchAll();
 
         //assert
@@ -927,7 +938,9 @@ class DatabaseTest extends TestCase
         $result = $selectStatement->execute();
 
         //act
-        $expected = new Collection([['id'=>$lastInsertIdPost], ['id'=>$lastInsertIdPost2]]);
+        $expected = $this->collectionEach(
+            new Collection([['id'=>$lastInsertIdPost], ['id'=>$lastInsertIdPost2]])
+        );
         $actual = $result->fetchAll();
 
         //assert
@@ -997,5 +1010,16 @@ class DatabaseTest extends TestCase
     {
         $insertStatement = $this->database->insert($table, $parameters);
         return $insertStatement->execute();
+    }
+
+    /**
+     * @param $collection
+     * @return mixed
+     */
+    private function collectionEach($collection)
+    {
+        return $collection->each(function ($item) {
+            return new Item($item);
+        });
     }
 }

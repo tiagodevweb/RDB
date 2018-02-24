@@ -52,13 +52,7 @@ class Database implements DatabaseInterface
     public function selectSQL(string $sql, array $parameters = []): ISelectResult
     {
         try {
-            if (empty($this->parameters)) {
-                $stmt = $this->pdo->query($sql);
-            } else {
-                $stmt = $this->pdo->prepare($sql);
-                $stmt->execute($this->parameters);
-            }
-            return new SelectResult($stmt);
+            return new SelectResult($this->queryOrPrepare($sql, $parameters));
         } catch (\PDOException $e) {
             throw new DatabaseExecuteException("Execution of query database failed", 0, $e);
         }
@@ -77,5 +71,20 @@ class Database implements DatabaseInterface
     public function rollBack(): bool
     {
         return $this->pdo->rollBack();
+    }
+
+    /**
+     * @param string $sql
+     * @param array $parameters
+     * @return \PDOStatement
+     */
+    private function queryOrPrepare(string $sql, array $parameters): \PDOStatement
+    {
+        if (sizeof($parameters) === 0) {
+            return $this->pdo->query($sql);
+        }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($parameters);
+        return $stmt;
     }
 }
